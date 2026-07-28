@@ -1,0 +1,11 @@
+
+Table: application_documents
+  id (bigint(20) unsigned)
+  application_id (bigint(20) unsigned)
+  media_id (bigint(20) unsigned)
+  document_type (varchar(50))
+  label (varchar(150))
+  is_required (tinyint(1))
+  is_verified (tinyint(1))
+  rejection_reason (text)
+  created_at (timestamp)
