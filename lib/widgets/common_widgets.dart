@@ -1,6 +1,47 @@
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
 
+// ─── Hoverable Container / Builder ──────────────────────────────────────────
+class HoverableBuilder extends StatefulWidget {
+  final Widget Function(BuildContext context, bool isHovered, bool isPressed) builder;
+  final VoidCallback? onTap;
+
+  const HoverableBuilder({
+    super.key,
+    required this.builder,
+    this.onTap,
+  });
+
+  @override
+  State<HoverableBuilder> createState() => _HoverableBuilderState();
+}
+
+class _HoverableBuilderState extends State<HoverableBuilder> {
+  bool _isHovered = false;
+  bool _isPressed = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      cursor: widget.onTap != null ? SystemMouseCursors.click : SystemMouseCursors.basic,
+      onEnter: (_) => setState(() => _isHovered = true),
+      onExit: (_) => setState(() => _isHovered = false),
+      child: GestureDetector(
+        onTapDown: (_) => setState(() => _isPressed = true),
+        onTapUp: (_) => setState(() => _isPressed = false),
+        onTapCancel: () => setState(() => _isPressed = false),
+        onTap: widget.onTap,
+        child: AnimatedScale(
+          scale: _isPressed ? 0.98 : (_isHovered ? 1.015 : 1.0),
+          duration: const Duration(milliseconds: 200),
+          curve: Curves.easeOutCubic,
+          child: widget.builder(context, _isHovered, _isPressed),
+        ),
+      ),
+    );
+  }
+}
+
 // ─── Orange Gradient Badge / Chip ───────────────────────────────────────────
 class KbliCodeBadge extends StatelessWidget {
   final String code;
@@ -61,7 +102,7 @@ class CategoryCard extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: AppColors.surfaceContainerLow(context),
         borderRadius: BorderRadius.circular(18),
         boxShadow: [
           BoxShadow(
@@ -88,8 +129,8 @@ class CategoryCard extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        'Golongan $code',
+                      const Text(
+                        'Golongan ',
                         style: TextStyle(
                           fontSize: 11,
                           color: AppColors.primary,
@@ -103,7 +144,7 @@ class CategoryCard extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w600,
-                          color: AppColors.slate900,
+                          color: AppColors.slate900(context),
                           height: 1.3,
                         ),
                         maxLines: 2,
@@ -116,10 +157,10 @@ class CategoryCard extends StatelessWidget {
                   width: 32,
                   height: 32,
                   decoration: BoxDecoration(
-                    color: AppColors.primarySurface,
+                    color: AppColors.surfaceContainerHighest(context),
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  child: Icon(
+                  child: const Icon(
                     Icons.arrow_forward_ios_rounded,
                     size: 14,
                     color: AppColors.primary,
@@ -151,7 +192,7 @@ class KbliSearchBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: AppColors.surfaceContainerLow(context),
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
@@ -167,23 +208,23 @@ class KbliSearchBar extends StatelessWidget {
         onSubmitted: (_) => onSubmit?.call(),
         style: TextStyle(
           fontSize: 15,
-          color: AppColors.slate900,
+          color: AppColors.slate900(context),
           fontWeight: FontWeight.w500,
         ),
         decoration: InputDecoration(
           hintText: 'Cari kode atau nama kegiatan...',
           hintStyle: TextStyle(
-            color: AppColors.slate400,
+            color: AppColors.slate400(context),
             fontSize: 14,
             fontWeight: FontWeight.w400,
           ),
           prefixIcon: Container(
             padding: const EdgeInsets.all(12),
-            child: Icon(Icons.search_rounded, color: AppColors.primary, size: 22),
+            child: const Icon(Icons.search_rounded, color: AppColors.primary, size: 22),
           ),
           suffixIcon: controller.text.isNotEmpty
               ? IconButton(
-                  icon: Icon(Icons.close_rounded, color: AppColors.slate400, size: 18),
+                  icon: Icon(Icons.close_rounded, color: AppColors.slate400(context), size: 18),
                   onPressed: () {
                     controller.clear();
                     onChanged('');
@@ -237,7 +278,7 @@ class _SkeletonCardState extends State<SkeletonCard>
         margin: const EdgeInsets.only(bottom: 10),
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: AppColors.surface,
+          color: AppColors.surfaceContainerLow(context),
           borderRadius: BorderRadius.circular(18),
         ),
         child: Row(
@@ -246,7 +287,7 @@ class _SkeletonCardState extends State<SkeletonCard>
               width: 48,
               height: 48,
               decoration: BoxDecoration(
-                color: AppColors.slate200,
+                color: AppColors.slate200(context),
                 borderRadius: BorderRadius.circular(14),
               ),
             ),
@@ -259,7 +300,7 @@ class _SkeletonCardState extends State<SkeletonCard>
                     height: 10,
                     width: 80,
                     decoration: BoxDecoration(
-                      color: AppColors.slate200,
+                      color: AppColors.slate200(context),
                       borderRadius: BorderRadius.circular(6),
                     ),
                   ),
@@ -267,7 +308,7 @@ class _SkeletonCardState extends State<SkeletonCard>
                   Container(
                     height: 14,
                     decoration: BoxDecoration(
-                      color: AppColors.slate100,
+                      color: AppColors.slate100(context),
                       borderRadius: BorderRadius.circular(6),
                     ),
                   ),
@@ -304,10 +345,10 @@ class ErrorStateWidget extends StatelessWidget {
               width: 72,
               height: 72,
               decoration: BoxDecoration(
-                color: AppColors.primarySurface,
+                color: AppColors.surfaceContainerHighest(context),
                 shape: BoxShape.circle,
               ),
-              child: Icon(
+              child: const Icon(
                 Icons.cloud_off_rounded,
                 size: 36,
                 color: AppColors.primary,
@@ -319,7 +360,7 @@ class ErrorStateWidget extends StatelessWidget {
               style: TextStyle(
                 fontSize: 17,
                 fontWeight: FontWeight.w700,
-                color: AppColors.slate900,
+                color: AppColors.slate900(context),
               ),
             ),
             const SizedBox(height: 8),
@@ -328,15 +369,15 @@ class ErrorStateWidget extends StatelessWidget {
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 13,
-                color: AppColors.slate400,
+                color: AppColors.slate400(context),
                 height: 1.5,
               ),
             ),
             const SizedBox(height: 24),
             ElevatedButton.icon(
               onPressed: onRetry,
-              icon: Icon(Icons.refresh_rounded, size: 18),
-              label: Text('Coba Lagi'),
+              icon: const Icon(Icons.refresh_rounded, size: 18),
+              label: const Text('Coba Lagi'),
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.primary,
                 foregroundColor: Colors.white,
@@ -377,10 +418,10 @@ class EmptyStateWidget extends StatelessWidget {
               width: 80,
               height: 80,
               decoration: BoxDecoration(
-                color: AppColors.primarySurface,
+                color: AppColors.surfaceContainerHighest(context),
                 shape: BoxShape.circle,
               ),
-              child: Icon(
+              child: const Icon(
                 Icons.search_off_rounded,
                 size: 40,
                 color: AppColors.primary,
@@ -392,7 +433,7 @@ class EmptyStateWidget extends StatelessWidget {
               style: TextStyle(
                 fontSize: 17,
                 fontWeight: FontWeight.w700,
-                color: AppColors.slate900,
+                color: AppColors.slate900(context),
               ),
             ),
             const SizedBox(height: 8),
@@ -401,7 +442,7 @@ class EmptyStateWidget extends StatelessWidget {
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 13,
-                color: AppColors.slate400,
+                color: AppColors.slate400(context),
                 height: 1.5,
               ),
             ),

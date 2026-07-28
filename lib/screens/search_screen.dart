@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../theme/app_theme.dart';
@@ -101,13 +103,13 @@ class _SearchScreenState extends State<SearchScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: AppColors.background(context),
       appBar: AppBar(
-        backgroundColor: AppColors.surface,
+        backgroundColor: AppColors.surface(context),
         elevation: 0,
         leadingWidth: 48,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios_new_rounded, size: 18),
+          icon: const Icon(Icons.arrow_back_ios_new_rounded, size: 18),
           onPressed: () => Navigator.pop(context),
         ),
         title: KbliSearchBar(
@@ -128,13 +130,13 @@ class _SearchScreenState extends State<SearchScreen> {
         titleSpacing: 0,
         actions: const [SizedBox(width: 16)],
       ),
-      body: _buildBody(),
+      body: _buildBody(context),
     );
   }
 
-  Widget _buildBody() {
+  Widget _buildBody(BuildContext context) {
     if (!_hasSearched) {
-      return _buildInitialState();
+      return _buildInitialState(context);
     }
 
     if (_isSearching) {
@@ -157,12 +159,12 @@ class _SearchScreenState extends State<SearchScreen> {
       itemCount: _results.length,
       itemBuilder: (context, index) {
         final item = _results[index];
-        return _buildResultCard(item);
+        return _buildResultCard(context, item);
       },
     );
   }
 
-  Widget _buildInitialState() {
+  Widget _buildInitialState(BuildContext context) {
     final suggestions = [
       'Pertanian', 'Konstruksi', 'Perdagangan', 'Pendidikan', 'Teknologi',
       'Pariwisata', 'Manufaktur', 'Keuangan',
@@ -183,7 +185,7 @@ class _SearchScreenState extends State<SearchScreen> {
                   style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w700,
-                    color: AppColors.slate900,
+                    color: AppColors.slate900(context),
                   ),
                 ),
                 TextButton(
@@ -193,7 +195,7 @@ class _SearchScreenState extends State<SearchScreen> {
                     minimumSize: Size.zero,
                     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   ),
-                  child: Text(
+                  child: const Text(
                     'Hapus Semua',
                     style: TextStyle(
                       fontSize: 12,
@@ -210,24 +212,24 @@ class _SearchScreenState extends State<SearchScreen> {
                 return Container(
                   margin: const EdgeInsets.only(bottom: 8),
                   decoration: BoxDecoration(
-                    color: AppColors.surface,
+                    color: AppColors.surfaceContainerLow(context),
                     borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: AppColors.slate200),
+                    border: Border.all(color: AppColors.slate200(context)),
                   ),
                   child: ListTile(
                     contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
                     dense: true,
-                    leading: Icon(Icons.history_rounded, color: AppColors.slate400, size: 18),
+                    leading: Icon(Icons.history_rounded, color: AppColors.slate400(context), size: 18),
                     title: Text(
                       query,
                       style: TextStyle(
                         fontSize: 13,
-                        color: AppColors.slate700,
+                        color: AppColors.slate700(context),
                         fontWeight: FontWeight.w500,
                       ),
                     ),
                     trailing: IconButton(
-                      icon: Icon(Icons.close_rounded, color: AppColors.slate400, size: 16),
+                      icon: Icon(Icons.close_rounded, color: AppColors.slate400(context), size: 16),
                       onPressed: () => _deleteRecentSearch(query),
                       padding: EdgeInsets.zero,
                       constraints: const BoxConstraints(),
@@ -247,7 +249,7 @@ class _SearchScreenState extends State<SearchScreen> {
             style: TextStyle(
               fontSize: 15,
               fontWeight: FontWeight.w700,
-              color: AppColors.slate900,
+              color: AppColors.slate900(context),
             ),
           ),
           const SizedBox(height: 14),
@@ -263,9 +265,9 @@ class _SearchScreenState extends State<SearchScreen> {
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
                   decoration: BoxDecoration(
-                    color: AppColors.surface,
+                    color: AppColors.surfaceContainerLow(context),
                     borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: AppColors.slate200),
+                    border: Border.all(color: AppColors.slate200(context)),
                     boxShadow: [
                       BoxShadow(
                         color: Colors.black.withOpacity(0.04),
@@ -277,14 +279,14 @@ class _SearchScreenState extends State<SearchScreen> {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(Icons.trending_up_rounded,
+                      const Icon(Icons.trending_up_rounded,
                           size: 14, color: AppColors.primary),
                       const SizedBox(width: 6),
                       Text(
                         s,
                         style: TextStyle(
                           fontSize: 13,
-                          color: AppColors.slate700,
+                          color: AppColors.slate700(context),
                           fontWeight: FontWeight.w500,
                         ),
                       ),
@@ -298,13 +300,13 @@ class _SearchScreenState extends State<SearchScreen> {
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: AppColors.primarySurface,
+              color: AppColors.surfaceContainerHighest(context),
               borderRadius: BorderRadius.circular(16),
               border: Border.all(color: AppColors.primary.withOpacity(0.15)),
             ),
             child: Row(
               children: [
-                Icon(Icons.lightbulb_outline_rounded,
+                const Icon(Icons.lightbulb_outline_rounded,
                     color: AppColors.primary, size: 22),
                 const SizedBox(width: 12),
                 Expanded(
@@ -312,7 +314,7 @@ class _SearchScreenState extends State<SearchScreen> {
                     'Tips: Ketik minimal 3 karakter untuk mulai mencari kode KBLI.',
                     style: TextStyle(
                       fontSize: 13,
-                      color: AppColors.slate700,
+                      color: AppColors.slate700(context),
                       height: 1.4,
                     ),
                   ),
@@ -325,11 +327,11 @@ class _SearchScreenState extends State<SearchScreen> {
     );
   }
 
-  Widget _buildResultCard(KbliItem item) {
+  Widget _buildResultCard(BuildContext context, KbliItem item) {
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: AppColors.surfaceContainerLow(context),
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
@@ -369,7 +371,7 @@ class _SearchScreenState extends State<SearchScreen> {
                   ),
                   child: Text(
                     item.kode,
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Colors.white,
                       fontSize: 12,
                       fontWeight: FontWeight.w700,
@@ -384,7 +386,7 @@ class _SearchScreenState extends State<SearchScreen> {
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
-                      color: AppColors.slate900,
+                      color: AppColors.slate900(context),
                       height: 1.3,
                     ),
                     maxLines: 2,
@@ -393,7 +395,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 ),
                 const SizedBox(width: 8),
                 Icon(Icons.chevron_right_rounded,
-                    color: AppColors.slate400, size: 20),
+                    color: AppColors.slate400(context), size: 20),
               ],
             ),
           ),

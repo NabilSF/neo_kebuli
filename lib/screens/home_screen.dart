@@ -6,16 +6,6 @@ import '../widgets/common_widgets.dart';
 import 'search_screen.dart';
 import 'detail_screen.dart';
 
-// --- TEMA WARNA REFERENSI BARU (GoBus Style - Terintegrasi Dark Mode) ---
-class RefTheme {
-  static Color get background => ThemeManager.isDark ? const Color(0xFF0F172A) : const Color(0xFFF8F9FA);
-  static Color get primary => const Color(0xFFFF8A00);
-  static Color get surface => ThemeManager.isDark ? const Color(0xFF1E293B) : Colors.white;
-  static Color get textDark => ThemeManager.isDark ? const Color(0xFFF8FAFC) : const Color(0xFF1A1A1A);
-  static Color get textLight => ThemeManager.isDark ? const Color(0xFF94A3B8) : const Color(0xFF8B8B8B);
-  static Color get border => ThemeManager.isDark ? const Color(0xFF334155) : const Color(0xFFE5E7EB);
-}
-
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -63,34 +53,85 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: RefTheme.background,
+    return ValueListenableBuilder<ThemeMode>(
+      valueListenable: ThemeManager.themeModeNotifier,
+      builder: (context, themeMode, _) {
+        return Scaffold(
+          backgroundColor: AppColors.background(context),
       body: SafeArea(
         child: CustomScrollView(
           physics: const BouncingScrollPhysics(),
           slivers: [
-            // ─── Bagian Atas (Header, Search, Banner) ─────────────
+            // Top Navigation Bar
             SliverToBoxAdapter(
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+                child: _buildTopBar(context),
+              ),
+            ),
+
+            // Hero Section & Floating Search Bar
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _buildTopBar(),
-                    const SizedBox(height: 24),
-                    _buildBanner(), // Banner Oranye
-                    const SizedBox(height: 20),
-                    _buildSearchBar(context),
-                    const SizedBox(height: 24),
-                    _buildStatsRow(),
-                    const SizedBox(height: 24),
-                    _buildSectionTitle(),
+                    _buildHeroSection(),
+                    Transform.translate(
+                      offset: const Offset(0, -26),
+                      child: _buildFloatingSearchBar(context),
+                    ),
                   ],
                 ),
               ),
             ),
 
-            // ─── Daftar Kategori (List Vertikal) ───
+            // Quick Access / Eksplorasi Section
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(20, 4, 20, 24),
+                child: _buildExplorationSection(context),
+              ),
+            ),
+
+            // Section Title: Golongan Pokok
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(20, 0, 20, 12),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Golongan Pokok Terpopuler',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.onSurface(context),
+                        letterSpacing: -0.3,
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (_) => const SearchScreen()),
+                        );
+                      },
+                      child: const Text(
+                        'Lihat Semua',
+                        style: TextStyle(
+                          color: AppColors.primary,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 13,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+
+            // List Golongan Pokok
             if (_isLoading)
               SliverPadding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -100,7 +141,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       padding: EdgeInsets.only(bottom: 12),
                       child: SkeletonCard(),
                     ),
-                    childCount: 6,
+                    childCount: 5,
                   ),
                 ),
               )
@@ -113,12 +154,12 @@ class _HomeScreenState extends State<HomeScreen> {
               )
             else
               SliverPadding(
-                padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
+                padding: const EdgeInsets.fromLTRB(20, 0, 20, 32),
                 sliver: SliverList(
                   delegate: SliverChildBuilderDelegate(
                     (context, index) {
                       final cat = _categories[index];
-                      return _buildCategoryListItem(cat);
+                      return _buildCategoryListItem(context, cat);
                     },
                     childCount: _categories.length,
                   ),
@@ -128,297 +169,507 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
     );
+      },
+    );
   }
 
-  // ─── KOMPONEN UI (Gaya Bersih & Oranye) ──────────────────────────────────
-
-  Widget _buildTopBar() {
-    final isDark = ThemeManager.isDark;
+  // ─── TOP BAR ─────────────────────────────────────────────────────────────
+  Widget _buildTopBar(BuildContext context) {
+    final isDark = ThemeManager.isDark(context);
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        GestureDetector(
-          onTap: () {
-            ThemeManager.toggleTheme();
-          },
-          child: Container(
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: RefTheme.surface,
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: RefTheme.border),
+        Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: AppColors.primary.withOpacity(0.12),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Icon(
+                Icons.factory_rounded,
+                color: isDark ? AppColors.primaryFixedDim : AppColors.primary,
+                size: 24,
+              ),
             ),
-            child: Icon(
-              isDark ? Icons.light_mode_rounded : Icons.dark_mode_rounded,
-              color: isDark ? const Color(0xFFFFB347) : RefTheme.textDark,
-              size: 22,
+            const SizedBox(width: 10),
+            Text(
+              'NEO KEBULI',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.w800,
+                color: isDark ? AppColors.primaryFixedDim : AppColors.primary,
+                letterSpacing: -0.3,
+              ),
             ),
-          ),
+          ],
         ),
-        Text(
-          'KBLI BPS',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w800,
-            color: RefTheme.textDark,
-          ),
+        Row(
+          children: [
+            HoverableBuilder(
+              onTap: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: const Text('Tidak ada notifikasi baru'),
+                    behavior: SnackBarBehavior.floating,
+                    backgroundColor: AppColors.onSurfaceVariant(context),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                );
+              },
+              builder: (context, isHovered, isPressed) {
+                return Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: isHovered
+                        ? AppColors.primary.withOpacity(0.08)
+                        : Colors.transparent,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    Icons.notifications_outlined,
+                    color: AppColors.onSurfaceVariant(context),
+                    size: 22,
+                  ),
+                );
+              },
+            ),
+            const SizedBox(width: 4),
+            HoverableBuilder(
+              onTap: () => ThemeManager.toggleTheme(),
+              builder: (context, isHovered, isPressed) {
+                return Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: isHovered
+                        ? AppColors.primary.withOpacity(0.08)
+                        : Colors.transparent,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    isDark ? Icons.light_mode_rounded : Icons.dark_mode_outlined,
+                    color: isDark ? AppColors.primaryFixedDim : AppColors.primary,
+                    size: 22,
+                  ),
+                );
+              },
+            ),
+          ],
         ),
-        const SizedBox(width: 40),
       ],
     );
   }
 
-  // Banner bergaya card utama berwarna oranye khas aplikasi referensi
-  Widget _buildBanner() {
+  // ─── HERO SECTION ────────────────────────────────────────────────────────
+  Widget _buildHeroSection() {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+      constraints: const BoxConstraints(minHeight: 190),
+      padding: const EdgeInsets.all(22),
       decoration: BoxDecoration(
-        color: RefTheme.primary,
-        borderRadius: BorderRadius.circular(16),
+        gradient: const LinearGradient(
+          colors: AppColors.heroGradient,
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: RefTheme.primary.withOpacity(0.3),
-            blurRadius: 12,
-            offset: const Offset(0, 6),
+            color: AppColors.primary.withOpacity(0.3),
+            blurRadius: 20,
+            offset: const Offset(0, 10),
           ),
         ],
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Stack(
         children: [
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-            decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.2),
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Text(
-              'Edisi 2025',
-              style: TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.w600),
+          Positioned(
+            right: -10,
+            top: -10,
+            child: Icon(
+              Icons.analytics_rounded,
+              size: 130,
+              color: Colors.white.withOpacity(0.12),
             ),
           ),
-          const SizedBox(height: 12),
-          Text(
-            'Klasifikasi Baku\nLapangan Usaha',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 22,
-              fontWeight: FontWeight.w800,
-              height: 1.3,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  // Search bar putih bersih dengan garis pinggir tipis
-  Widget _buildSearchBar(BuildContext context) {
-    return GestureDetector(
-      onTap: () => Navigator.push(
-        context,
-        MaterialPageRoute(builder: (_) => const SearchScreen()),
-      ),
-      child: Container(
-        height: 52,
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        decoration: BoxDecoration(
-          color: RefTheme.surface,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: RefTheme.border),
-        ),
-        child: Row(
-          children: [
-            Icon(Icons.search_rounded, color: RefTheme.textLight, size: 24),
-            const SizedBox(width: 12),
-            Text(
-              'Cari kategori atau kode...',
-              style: TextStyle(color: RefTheme.textLight.withOpacity(0.8), fontSize: 14),
-            ),
-            const Spacer(),
-            // Tombol mini oranye di dalam search bar
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-              decoration: BoxDecoration(
-                color: RefTheme.primary.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Text(
-                'Cari',
-                style: TextStyle(
-                  color: RefTheme.primary,
-                  fontSize: 12,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            )
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildStatsRow() {
-    final stats = [
-      {'icon': Icons.account_tree_outlined, 'value': '24', 'label': 'Kategori Utama'},
-      {'icon': Icons.format_list_bulleted_rounded, 'value': '464', 'label': 'Komoditas'},
-    ];
-
-    return Row(
-      children: stats.map((stat) {
-        return Expanded(
-          child: Container(
-            margin: stats.indexOf(stat) == 0 ? const EdgeInsets.only(right: 12) : EdgeInsets.zero,
-            padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
-            decoration: BoxDecoration(
-              color: RefTheme.surface,
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: RefTheme.border),
-            ),
-            child: Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: RefTheme.primary.withOpacity(0.1),
-                    shape: BoxShape.circle,
-                  ),
-                  child: Icon(stat['icon'] as IconData, color: RefTheme.primary, size: 20),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        stat['value'] as String,
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w800,
-                          color: RefTheme.textDark,
-                        ),
-                      ),
-                      Text(
-                        stat['label'] as String,
-                        style: TextStyle(fontSize: 11, color: RefTheme.textLight),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
-      }).toList(),
-    );
-  }
-
-  Widget _buildSectionTitle() {
-    return Padding(
-      padding: EdgeInsets.only(bottom: 8),
-      child: Text(
-        'Golongan Pokok',
-        style: TextStyle(
-          fontSize: 16,
-          fontWeight: FontWeight.bold,
-          color: RefTheme.textDark,
-        ),
-      ),
-    );
-  }
-
-  // ─── Item List (Menggunakan Border abu tipis ala desain tiket) ───
-  Widget _buildCategoryListItem(KbliCategory cat) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 12), // Jarak antar item
-      child: GestureDetector(
-        onTap: () => Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (_) => DetailScreen(
-              categoryCode: cat.kode,
-              categoryTitle: cat.judul,
-            ),
-          ),
-        ),
-        child: Container(
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: RefTheme.surface,
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: RefTheme.border), // Border abu-abu tipis
-          ),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              // Lingkaran Oranye untuk huruf Kategori (A, B, C...)
               Container(
-                width: 48,
-                height: 48,
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
                 decoration: BoxDecoration(
-                  color: RefTheme.primary.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: RefTheme.primary.withOpacity(0.3)),
+                  color: Colors.white.withOpacity(0.2),
+                  borderRadius: BorderRadius.circular(20),
                 ),
-                child: Center(
-                  child: Padding(
-                    padding: const EdgeInsets.all(4.0),
-                    child: FittedBox(
-                      fit: BoxFit.scaleDown,
-                      child: Text(
-                        cat.kode,
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: RefTheme.primary,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(width: 16),
-              
-              // Teks Konten
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text(
-                      'Kategori ${cat.kode}',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: RefTheme.textLight,
-                        fontWeight: FontWeight.w500,
+                    Container(
+                      width: 7,
+                      height: 7,
+                      decoration: const BoxDecoration(
+                        color: Colors.white,
+                        shape: BoxShape.circle,
                       ),
                     ),
-                    const SizedBox(height: 4),
-                    Text(
-                      cat.judul,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
+                    const SizedBox(width: 8),
+                    const Text(
+                      'Versi Terbaru',
                       style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w700,
-                        color: RefTheme.textDark,
-                        height: 1.4,
+                        color: Colors.white,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
                   ],
                 ),
               ),
-              const SizedBox(width: 12),
-              
-              // Tombol / Ikon Aksi (Panah ke kanan)
-              Icon(
-                Icons.chevron_right_rounded,
-                size: 24,
-                color: RefTheme.textLight,
+              const SizedBox(height: 12),
+              const Text(
+                'Klasifikasi Baku Lapangan Usaha',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 23,
+                  fontWeight: FontWeight.w800,
+                  height: 1.25,
+                  letterSpacing: -0.5,
+                ),
+              ),
+              const SizedBox(height: 6),
+              Text(
+                'Temukan kode standar usaha Anda dengan data terbaru BPS.',
+                style: TextStyle(
+                  color: Colors.white.withOpacity(0.85),
+                  fontSize: 13,
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+              const SizedBox(height: 14),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ─── FLOATING SEARCH BAR ──────────────────────────────────────────────────
+  Widget _buildFloatingSearchBar(BuildContext context) {
+    return HoverableBuilder(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => const SearchScreen()),
+        );
+      },
+      builder: (context, isHovered, isPressed) {
+        return AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          height: 56,
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          decoration: BoxDecoration(
+            color: AppColors.surfaceContainerLowest(context),
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(
+              color: isHovered
+                  ? AppColors.primary.withOpacity(0.5)
+                  : AppColors.outlineVariant(context).withOpacity(0.4),
+              width: isHovered ? 1.5 : 1.0,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(isHovered ? 0.12 : 0.07),
+                blurRadius: isHovered ? 24 : 16,
+                offset: const Offset(0, 6),
               ),
             ],
           ),
+          child: Row(
+            children: [
+              Icon(
+                Icons.search_rounded,
+                color: isHovered ? AppColors.primary : AppColors.outline(context),
+                size: 22,
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  'Cari Kode atau Nama KBLI...',
+                  style: TextStyle(
+                    color: AppColors.onSurfaceVariant(context).withOpacity(0.7),
+                    fontSize: 14,
+                  ),
+                ),
+              ),
+              AnimatedContainer(
+                duration: const Duration(milliseconds: 200),
+                padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 9),
+                decoration: BoxDecoration(
+                  color: isHovered ? AppColors.primaryContainer : AppColors.primary,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: const Text(
+                  'Cari',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 13,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  // ─── EKSPLORASI SECTION ───────────────────────────────────────────────────
+  Widget _buildExplorationSection(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              'Eksplorasi',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w700,
+                color: AppColors.onSurface(context),
+                letterSpacing: -0.3,
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const SearchScreen()),
+                );
+              },
+              child: const Text(
+                'Lihat Semua',
+                style: TextStyle(
+                  color: AppColors.primary,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 13,
+                ),
+              ),
+            ),
+          ],
         ),
+        const SizedBox(height: 8),
+        Row(
+          children: [
+            Expanded(
+              child: _buildExplorationCard(
+                icon: Icons.category_rounded,
+                iconBg: AppColors.primaryFixed,
+                iconColor: AppColors.primary,
+                title: 'Kategori Utama',
+                subtitle: '21 Sektor Industri Utama',
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const SearchScreen()),
+                  );
+                },
+              ),
+            ),
+            const SizedBox(width: 14),
+            Expanded(
+              child: _buildExplorationCard(
+                icon: Icons.inventory_2_rounded,
+                iconBg: AppColors.tertiaryFixed,
+                iconColor: AppColors.tertiary,
+                title: 'Komoditas',
+                subtitle: 'Daftar Produk Terkait',
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const SearchScreen()),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildExplorationCard({
+    required IconData icon,
+    required Color iconBg,
+    required Color iconColor,
+    required String title,
+    required String subtitle,
+    required VoidCallback onTap,
+  }) {
+    return HoverableBuilder(
+      onTap: onTap,
+      builder: (context, isHovered, isPressed) {
+        return AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          padding: const EdgeInsets.all(18),
+          decoration: BoxDecoration(
+            color: AppColors.surfaceContainerLow(context),
+            borderRadius: BorderRadius.circular(18),
+            border: Border.all(
+              color: isHovered
+                  ? iconColor.withOpacity(0.5)
+                  : AppColors.outlineVariant(context).withOpacity(0.2),
+              width: isHovered ? 1.5 : 1.0,
+            ),
+            boxShadow: isHovered
+                ? [
+                    BoxShadow(
+                      color: iconColor.withOpacity(0.12),
+                      blurRadius: 16,
+                      offset: const Offset(0, 4),
+                    ),
+                  ]
+                : [],
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              AnimatedScale(
+                scale: isHovered ? 1.1 : 1.0,
+                duration: const Duration(milliseconds: 200),
+                child: Container(
+                  width: 44,
+                  height: 44,
+                  decoration: BoxDecoration(
+                    color: iconBg,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Icon(icon, color: iconColor, size: 22),
+                ),
+              ),
+              const SizedBox(height: 14),
+              Text(
+                title,
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.onSurface(context),
+                ),
+              ),
+              const SizedBox(height: 3),
+              Text(
+                subtitle,
+                style: TextStyle(
+                  fontSize: 12,
+                  color: AppColors.onSurfaceVariant(context),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  // ─── CATEGORY LIST ITEM ──────────────────────────────────────────────────
+  Widget _buildCategoryListItem(BuildContext context, KbliCategory cat) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: HoverableBuilder(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => DetailScreen(
+                categoryCode: cat.kode,
+                categoryTitle: cat.judul,
+              ),
+            ),
+          );
+        },
+        builder: (context, isHovered, isPressed) {
+          return AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: isHovered
+                  ? AppColors.surfaceContainerHigh(context)
+                  : AppColors.surfaceContainerLowest(context),
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(
+                color: isHovered
+                    ? AppColors.primary.withOpacity(0.3)
+                    : AppColors.outlineVariant(context).withOpacity(0.2),
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(isHovered ? 0.08 : 0.03),
+                  blurRadius: isHovered ? 12 : 6,
+                  offset: const Offset(0, 3),
+                ),
+              ],
+            ),
+            child: Row(
+              children: [
+                Container(
+                  width: 44,
+                  height: 44,
+                  decoration: BoxDecoration(
+                    color: AppColors.primary.withOpacity(0.1),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Center(
+                    child: Text(
+                      cat.kode,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w800,
+                        color: AppColors.primary,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 14),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        cat.judul,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w700,
+                          color: AppColors.onSurface(context),
+                        ),
+                      ),
+                      const SizedBox(height: 3),
+                      Text(
+                        'Klasifikasi Utama BPS',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: AppColors.onSurfaceVariant(context),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Icon(
+                  Icons.chevron_right_rounded,
+                  size: 22,
+                  color: isHovered
+                      ? AppColors.primary
+                      : AppColors.onSurfaceVariant(context).withOpacity(0.5),
+                ),
+              ],
+            ),
+          );
+        },
       ),
     );
   }

@@ -59,8 +59,8 @@ class _DetailScreenState extends State<DetailScreen>
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Dihapus dari bookmark!'),
-            backgroundColor: AppColors.slate700,
+            content: const Text('Dihapus dari bookmark!'),
+            backgroundColor: AppColors.onSurfaceVariant(context),
             behavior: SnackBarBehavior.floating,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             duration: const Duration(seconds: 1),
@@ -73,7 +73,7 @@ class _DetailScreenState extends State<DetailScreen>
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Disimpan ke bookmark!'),
+            content: const Text('Disimpan ke bookmark!'),
             backgroundColor: AppColors.primary,
             behavior: SnackBarBehavior.floating,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -138,7 +138,7 @@ class _DetailScreenState extends State<DetailScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: AppColors.background(context),
       body: NestedScrollView(
         physics: const BouncingScrollPhysics(),
         headerSliverBuilder: (context, innerBoxIsScrolled) => [
@@ -147,9 +147,9 @@ class _DetailScreenState extends State<DetailScreen>
         body: TabBarView(
           controller: _tabController,
           children: [
-            _buildDeskripsiTab(),
-            _buildHierarkiTab(),
-            _buildTurunanTab(),
+            _buildDeskripsiTab(context),
+            _buildStrukturTab(context),
+            _buildProdukTab(context),
           ],
         ),
       ),
@@ -158,51 +158,85 @@ class _DetailScreenState extends State<DetailScreen>
 
   Widget _buildSliverAppBar(bool innerBoxIsScrolled) {
     return SliverAppBar(
-      expandedHeight: 250,
+      expandedHeight: 230,
       floating: false,
       pinned: true,
       backgroundColor: AppColors.primary,
       elevation: innerBoxIsScrolled ? 2 : 0,
-      leading: Container(
-        margin: const EdgeInsets.all(8),
-        decoration: BoxDecoration(
-          color: AppColors.surface,
-          borderRadius: BorderRadius.circular(10),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.08),
-              blurRadius: 8,
-              offset: const Offset(0, 2),
-            ),
-          ],
-        ),
-        child: IconButton(
-          icon: Icon(Icons.arrow_back_ios_new_rounded,
-              size: 16, color: AppColors.slate900),
-          onPressed: () => Navigator.pop(context),
+      leading: Padding(
+        padding: const EdgeInsets.all(8),
+        child: HoverableBuilder(
+          onTap: () => Navigator.pop(context),
+          builder: (context, isHovered, isPressed) {
+            return AnimatedContainer(
+              duration: const Duration(milliseconds: 150),
+              decoration: BoxDecoration(
+                color: isHovered
+                    ? Colors.white.withOpacity(0.3)
+                    : Colors.white.withOpacity(0.2),
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(
+                Icons.arrow_back_rounded,
+                size: 20,
+                color: Colors.white,
+              ),
+            );
+          },
         ),
       ),
       actions: [
-        Container(
-          margin: const EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            color: AppColors.surface,
-            borderRadius: BorderRadius.circular(10),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.08),
-                blurRadius: 8,
-                offset: const Offset(0, 2),
-              ),
-            ],
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 4),
+          child: HoverableBuilder(
+            onTap: () {
+              Clipboard.setData(ClipboardData(text: widget.categoryCode));
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: const Text('Kode KBLI disalin ke papan klip!'),
+                  behavior: SnackBarBehavior.floating,
+                  backgroundColor: AppColors.primary,
+                ),
+              );
+            },
+            builder: (context, isHovered, isPressed) {
+              return Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: isHovered
+                      ? Colors.white.withOpacity(0.3)
+                      : Colors.transparent,
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.share_outlined,
+                  size: 20,
+                  color: Colors.white,
+                ),
+              );
+            },
           ),
-          child: IconButton(
-            icon: Icon(
-              _isBookmarked ? Icons.bookmark_rounded : Icons.bookmark_border_rounded,
-              size: 18,
-              color: _isBookmarked ? AppColors.primary : AppColors.slate700,
-            ),
-            onPressed: _toggleBookmark,
+        ),
+        Padding(
+          padding: const EdgeInsets.only(right: 12),
+          child: HoverableBuilder(
+            onTap: _toggleBookmark,
+            builder: (context, isHovered, isPressed) {
+              return Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: isHovered
+                      ? Colors.white.withOpacity(0.3)
+                      : Colors.transparent,
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  _isBookmarked ? Icons.bookmark_rounded : Icons.bookmark_outline_rounded,
+                  size: 22,
+                  color: Colors.white,
+                ),
+              );
+            },
           ),
         ),
       ],
@@ -211,24 +245,23 @@ class _DetailScreenState extends State<DetailScreen>
       ),
       bottom: TabBar(
         controller: _tabController,
+        isScrollable: true,
         indicatorColor: Colors.white,
-        indicatorWeight: 2.5,
-        indicatorSize: TabBarIndicatorSize.label,
+        indicatorWeight: 3,
         labelColor: Colors.white,
-        unselectedLabelColor: Colors.white.withOpacity(0.75),
-        labelStyle: TextStyle(
+        unselectedLabelColor: Colors.white.withOpacity(0.7),
+        labelStyle: const TextStyle(
           fontWeight: FontWeight.w700,
           fontSize: 14,
-          letterSpacing: -0.2,
         ),
-        unselectedLabelStyle: TextStyle(
+        unselectedLabelStyle: const TextStyle(
           fontWeight: FontWeight.w500,
           fontSize: 14,
         ),
         tabs: const [
           Tab(text: 'Deskripsi'),
-          Tab(text: 'Hierarki'),
-          Tab(text: 'Turunan'),
+          Tab(text: 'Struktur'),
+          Tab(text: 'Produk'),
         ],
       ),
     );
@@ -238,69 +271,43 @@ class _DetailScreenState extends State<DetailScreen>
     return Container(
       decoration: const BoxDecoration(
         gradient: LinearGradient(
-          colors: [Color(0xFFFF7518), Color(0xFFFFB347)],
+          colors: AppColors.heroGradient,
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
       ),
       child: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(24, 48, 24, 48),
+          padding: const EdgeInsets.fromLTRB(20, 36, 20, 48),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              // Code badge
-              GestureDetector(
-                onTap: () {
-                  Clipboard.setData(ClipboardData(text: widget.categoryCode));
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text('Kode disalin!'),
-                      backgroundColor: AppColors.primaryDark,
-                      behavior: SnackBarBehavior.floating,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12)),
-                      duration: const Duration(seconds: 1),
-                    ),
-                  );
-                },
-                child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.25),
-                    borderRadius: BorderRadius.circular(20),
-                    border:
-                        Border.all(color: Colors.white.withOpacity(0.4)),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(Icons.tag_rounded,
-                          color: Colors.white, size: 14),
-                      const SizedBox(width: 6),
-                      Text(
-                        'KBLI ${widget.categoryCode}',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 12,
-                          fontWeight: FontWeight.w700,
-                          letterSpacing: 0.5,
-                        ),
-                      ),
-                    ],
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.2),
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: Colors.white.withOpacity(0.3)),
+                ),
+                child: const Text(
+                  'NEO KEBULI',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 11,
+                    fontWeight: FontWeight.w600,
+                    letterSpacing: 0.5,
                   ),
                 ),
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 8),
               Text(
                 widget.categoryTitle,
-                style: TextStyle(
+                style: const TextStyle(
                   color: Colors.white,
-                  fontSize: 20,
+                  fontSize: 21,
                   fontWeight: FontWeight.w800,
-                  height: 1.2,
+                  height: 1.25,
                   letterSpacing: -0.4,
                 ),
                 maxLines: 2,
@@ -313,7 +320,8 @@ class _DetailScreenState extends State<DetailScreen>
     );
   }
 
-  Widget _buildDeskripsiTab() {
+  // ─── TAB DESKRIPSI ────────────────────────────────────────────────────────
+  Widget _buildDeskripsiTab(BuildContext context) {
     if (_isLoadingDetail) {
       return const Center(
         child: CircularProgressIndicator(color: AppColors.primary),
@@ -321,7 +329,7 @@ class _DetailScreenState extends State<DetailScreen>
     }
 
     final deskripsi = _detail?.deskripsi ??
-        'Deskripsi lengkap untuk golongan "${widget.categoryTitle}" ini mencakup berbagai kegiatan usaha yang dikategorikan berdasarkan KBLI 2025 yang diterbitkan oleh Badan Pusat Statistik Republik Indonesia.';
+        'Deskripsi lengkap untuk kelompok "${widget.categoryTitle}" mencakup proses manufaktur, pengolahan, serta distribusi barang/jasa terkait sesuai standar klasifikasi industri BPS 2025.';
 
     return SingleChildScrollView(
       physics: const BouncingScrollPhysics(),
@@ -329,28 +337,48 @@ class _DetailScreenState extends State<DetailScreen>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Info Card
+          // Bento Style Information Grid
+          _buildBentoInfoGrid(context),
+
+          const SizedBox(height: 20),
+
+          // Important Callout Box
           Container(
-            padding: const EdgeInsets.all(18),
+            padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: AppColors.primarySurface,
+              color: AppColors.primaryContainer.withOpacity(0.08),
               borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: AppColors.primary.withOpacity(0.15)),
+              border: const Border(
+                left: BorderSide(color: AppColors.primary, width: 4),
+              ),
             ),
             child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Icon(Icons.info_outline_rounded,
-                    color: AppColors.primary, size: 22),
+                const Icon(Icons.info_rounded, color: AppColors.primary, size: 22),
                 const SizedBox(width: 12),
                 Expanded(
-                  child: Text(
-                    'Data bersumber dari BPS RI — KBLI Edisi 2025',
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: AppColors.slate700,
-                      fontWeight: FontWeight.w500,
-                      height: 1.4,
-                    ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Catatan Penting Edisi 2025',
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w700,
+                          color: AppColors.primary,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        'Kode ini telah diperbarui untuk mencakup standar kebersihan industri 4.0. Pastikan sertifikasi usaha Anda masih berlaku.',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: AppColors.onSurfaceVariant(context),
+                          height: 1.4,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
@@ -359,97 +387,223 @@ class _DetailScreenState extends State<DetailScreen>
 
           const SizedBox(height: 20),
 
-          Text(
-            'Deskripsi Golongan',
-            style: TextStyle(
-              fontSize: 15,
-              fontWeight: FontWeight.w700,
-              color: AppColors.slate900,
-            ),
-          ),
-          const SizedBox(height: 12),
-          Text(
-            deskripsi,
-            style: TextStyle(
-              fontSize: 14,
-              color: AppColors.slate700,
-              height: 1.7,
+          // Cakupan Kegiatan Card
+          _buildCardContainer(
+            context,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Cakupan Kegiatan',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.onSurface(context),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  deskripsi,
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: AppColors.onSurfaceVariant(context),
+                    height: 1.6,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                _buildBulletPoint(context, 'Kegiatan pengolahan dan manufaktur standar industri.'),
+                _buildBulletPoint(context, 'Pengemasan, pendistribusian, dan penyediaan produk akhir.'),
+                _buildBulletPoint(context, 'Layanan pendukung yang terkait langsung dengan sektor ini.'),
+              ],
             ),
           ),
 
-          const SizedBox(height: 24),
+          const SizedBox(height: 16),
 
-          // Meta info
-          _buildMetaCard(),
+          // Pengecualian Card
+          _buildCardContainer(
+            context,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Icon(
+                  Icons.block_rounded,
+                  color: AppColors.outline(context),
+                  size: 20,
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    'Pengecualian: Produksi bahan mentah awal dan pertanian dasar tidak termasuk dalam kelompok ini, melainkan masuk ke Kategori Pertanian (01).',
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontStyle: FontStyle.italic,
+                      color: AppColors.onSurfaceVariant(context),
+                      height: 1.4,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 32),
         ],
       ),
     );
   }
 
-  Widget _buildMetaCard() {
-    return Container(
-      padding: const EdgeInsets.all(18),
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.04),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
+  Widget _buildBentoInfoGrid(BuildContext context) {
+    return _buildCardContainer(
+      context,
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'Informasi Kode',
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w700,
-              color: AppColors.slate900,
-            ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text(
+                'Informasi Kode',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.primary,
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                decoration: BoxDecoration(
+                  color: AppColors.primary.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: const Text(
+                  'Aktif',
+                  style: TextStyle(
+                    color: AppColors.primary,
+                    fontSize: 11,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ),
+            ],
           ),
-          Divider(height: 20, color: AppColors.slate200),
-          _buildMetaRow(Icons.tag_rounded, 'Kode', widget.categoryCode),
-          const SizedBox(height: 10),
-          _buildMetaRow(Icons.layers_rounded, 'Level', 'Golongan Pokok'),
-          const SizedBox(height: 10),
-          _buildMetaRow(Icons.calendar_today_rounded, 'Edisi', 'KBLI 2025'),
-          const SizedBox(height: 10),
-          _buildMetaRow(Icons.source_rounded, 'Sumber', 'BPS RI'),
+          const SizedBox(height: 16),
+          Row(
+            children: [
+              Expanded(
+                child: _buildBentoItem(
+                  context,
+                  icon: Icons.qr_code_2_rounded,
+                  label: 'KODE KBLI',
+                  value: widget.categoryCode,
+                  isCode: true,
+                ),
+              ),
+              Expanded(
+                child: _buildBentoItem(
+                  context,
+                  icon: Icons.account_tree_rounded,
+                  label: 'LEVEL',
+                  value: '${widget.categoryCode.length}',
+                ),
+              ),
+            ],
+          ),
+          const Divider(height: 24, thickness: 0.5),
+          _buildBentoItem(
+            context,
+            icon: Icons.category_rounded,
+            label: 'KATEGORI UTAMA',
+            value: widget.categoryCode.length >= 2
+                ? 'Kategori ${widget.categoryCode.substring(0, 2)} - BPS RI'
+                : 'Sektor Utama BPS',
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildMetaRow(IconData icon, String label, String value) {
+  Widget _buildBentoItem(
+    BuildContext context, {
+    required IconData icon,
+    required String label,
+    required String value,
+    bool isCode = false,
+  }) {
     return Row(
       children: [
-        Icon(icon, size: 16, color: AppColors.primary),
-        const SizedBox(width: 10),
-        Text(
-          '$label: ',
-          style: TextStyle(
-            fontSize: 13,
-            color: AppColors.slate400,
-            fontWeight: FontWeight.w500,
+        Container(
+          padding: const EdgeInsets.all(10),
+          decoration: BoxDecoration(
+            color: AppColors.surfaceContainerHigh(context),
+            borderRadius: BorderRadius.circular(12),
           ),
+          child: Icon(icon, color: AppColors.primary, size: 20),
         ),
-        Text(
-          value,
-          style: TextStyle(
-            fontSize: 13,
-            color: AppColors.slate900,
-            fontWeight: FontWeight.w600,
+        const SizedBox(width: 10),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                label,
+                style: TextStyle(
+                  fontSize: 10,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.onSurfaceVariant(context),
+                  letterSpacing: 0.5,
+                ),
+              ),
+              const SizedBox(height: 2),
+              Text(
+                value,
+                style: TextStyle(
+                  fontSize: isCode ? 16 : 14,
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.onSurface(context),
+                  fontFamily: isCode ? 'Monospace' : null,
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ],
           ),
         ),
       ],
     );
   }
 
-  Widget _buildHierarkiTab() {
+  Widget _buildBulletPoint(BuildContext context, String text) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            margin: const EdgeInsets.only(top: 6),
+            width: 6,
+            height: 6,
+            decoration: const BoxDecoration(
+              color: AppColors.primary,
+              shape: BoxShape.circle,
+            ),
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Text(
+              text,
+              style: TextStyle(
+                fontSize: 13,
+                color: AppColors.onSurfaceVariant(context),
+                height: 1.4,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ─── TAB STRUKTUR (HIERARKI) ──────────────────────────────────────────────
+  Widget _buildStrukturTab(BuildContext context) {
     final code = widget.categoryCode;
     List<Map<String, String>> hierarchy = [];
 
@@ -483,17 +637,17 @@ class _DetailScreenState extends State<DetailScreen>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Struktur Hierarki KBLI',
+            'Struktur KBLI',
             style: TextStyle(
-              fontSize: 15,
+              fontSize: 16,
               fontWeight: FontWeight.w700,
-              color: AppColors.slate900,
+              color: AppColors.onSurface(context),
             ),
           ),
           const SizedBox(height: 4),
           Text(
-            'Posisi kode ini dalam hierarki KBLI',
-            style: TextStyle(fontSize: 12, color: AppColors.slate400),
+            'Posisi kode ini dalam klasifikasi baku BPS',
+            style: TextStyle(fontSize: 12, color: AppColors.onSurfaceVariant(context)),
           ),
           const SizedBox(height: 20),
           ...hierarchy.asMap().entries.map((entry) {
@@ -501,6 +655,7 @@ class _DetailScreenState extends State<DetailScreen>
             final item = entry.value;
             final isFirst = i == 0;
             return _buildHierarchyItem(
+              context,
               level: item['level']!,
               code: item['kode']!,
               title: item['judul']!,
@@ -513,7 +668,8 @@ class _DetailScreenState extends State<DetailScreen>
     );
   }
 
-  Widget _buildHierarchyItem({
+  Widget _buildHierarchyItem(
+    BuildContext context, {
     required String level,
     required String code,
     required String title,
@@ -536,22 +692,16 @@ class _DetailScreenState extends State<DetailScreen>
                         end: Alignment.bottomRight,
                       )
                     : null,
-                color: isActive ? null : AppColors.slate200,
+                color: isActive ? null : AppColors.surfaceContainerHigh(context),
                 shape: BoxShape.circle,
               ),
               child: Center(
-                child: FittedBox(
-                  fit: BoxFit.scaleDown,
-                  child: Padding(
-                    padding: const EdgeInsets.all(4.0),
-                    child: Text(
-                      code,
-                      style: TextStyle(
-                        color: isActive ? Colors.white : AppColors.slate400,
-                        fontSize: 11,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
+                child: Text(
+                  code,
+                  style: TextStyle(
+                    color: isActive ? Colors.white : AppColors.onSurfaceVariant(context),
+                    fontSize: 11,
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
               ),
@@ -559,15 +709,15 @@ class _DetailScreenState extends State<DetailScreen>
             if (!isLast)
               Container(
                 width: 2,
-                height: 40,
-                color: AppColors.slate200,
+                height: 36,
+                color: AppColors.outlineVariant(context).withOpacity(0.5),
               ),
           ],
         ),
         const SizedBox(width: 14),
         Expanded(
           child: Padding(
-            padding: const EdgeInsets.only(top: 6, bottom: 20),
+            padding: const EdgeInsets.only(top: 4, bottom: 20),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -575,18 +725,17 @@ class _DetailScreenState extends State<DetailScreen>
                   level,
                   style: TextStyle(
                     fontSize: 11,
-                    color: isActive ? AppColors.primary : AppColors.slate400,
+                    color: isActive ? AppColors.primary : AppColors.onSurfaceVariant(context),
                     fontWeight: FontWeight.w600,
-                    letterSpacing: 0.3,
                   ),
                 ),
-                const SizedBox(height: 3),
+                const SizedBox(height: 2),
                 Text(
                   'Kode: $code',
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w700,
-                    color: AppColors.slate900,
+                    color: AppColors.onSurface(context),
                   ),
                 ),
                 if (title != '—')
@@ -594,11 +743,8 @@ class _DetailScreenState extends State<DetailScreen>
                     title,
                     style: TextStyle(
                       fontSize: 12,
-                      color: AppColors.slate700,
-                      height: 1.4,
+                      color: AppColors.onSurfaceVariant(context),
                     ),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
                   ),
               ],
             ),
@@ -608,7 +754,8 @@ class _DetailScreenState extends State<DetailScreen>
     );
   }
 
-  Widget _buildTurunanTab() {
+  // ─── TAB PRODUK / TURUNAN ─────────────────────────────────────────────────
+  Widget _buildProdukTab(BuildContext context) {
     if (_isLoadingChildren) {
       return ListView.builder(
         padding: const EdgeInsets.all(20),
@@ -619,8 +766,8 @@ class _DetailScreenState extends State<DetailScreen>
 
     if (_children.isEmpty) {
       return const EmptyStateWidget(
-        title: 'Tidak Ada Turunan',
-        subtitle: 'Tidak ditemukan sub-kode KBLI untuk kategori ini.',
+        title: 'Tidak Ada Sub-Produk',
+        subtitle: 'Tidak ditemukan rincian komoditas spesifik di bawah kelompok ini.',
       );
     }
 
@@ -631,48 +778,46 @@ class _DetailScreenState extends State<DetailScreen>
       itemBuilder: (context, index) {
         if (index == 0) {
           return Padding(
-            padding: const EdgeInsets.only(bottom: 14),
+            padding: const EdgeInsets.only(bottom: 12),
             child: Text(
-              '${_children.length} Kode Turunan',
+              '${_children.length} Komoditas Terkait',
               style: TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.w700,
-                color: AppColors.slate900,
+                color: AppColors.onSurface(context),
               ),
             ),
           );
         }
 
         final item = _children[index - 1];
-        return Container(
-          margin: const EdgeInsets.only(bottom: 10),
-          decoration: BoxDecoration(
-            color: AppColors.surface,
-            borderRadius: BorderRadius.circular(16),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.04),
-                blurRadius: 8,
-                offset: const Offset(0, 3),
-              ),
-            ],
-          ),
-          child: Material(
-            color: Colors.transparent,
-            borderRadius: BorderRadius.circular(16),
-            child: InkWell(
-              onTap: () => Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => DetailScreen(
-                    categoryCode: item.kode,
-                    categoryTitle: item.judul,
-                  ),
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 10),
+          child: HoverableBuilder(
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => DetailScreen(
+                  categoryCode: item.kode,
+                  categoryTitle: item.judul,
                 ),
               ),
-              borderRadius: BorderRadius.circular(16),
-              child: Padding(
+            ),
+            builder: (context, isHovered, isPressed) {
+              return AnimatedContainer(
+                duration: const Duration(milliseconds: 200),
                 padding: const EdgeInsets.all(14),
+                decoration: BoxDecoration(
+                  color: isHovered
+                      ? AppColors.surfaceContainerHigh(context)
+                      : AppColors.surfaceContainerLowest(context),
+                  borderRadius: BorderRadius.circular(14),
+                  border: Border.all(
+                    color: isHovered
+                        ? AppColors.primary.withOpacity(0.3)
+                        : AppColors.outlineVariant(context).withOpacity(0.2),
+                  ),
+                ),
                 child: Row(
                   children: [
                     Container(
@@ -680,7 +825,7 @@ class _DetailScreenState extends State<DetailScreen>
                           horizontal: 10, vertical: 6),
                       decoration: BoxDecoration(
                         gradient: const LinearGradient(
-                          colors: [Color(0xFFFF7518), Color(0xFFFFB347)],
+                          colors: AppColors.heroGradient,
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
                         ),
@@ -688,7 +833,7 @@ class _DetailScreenState extends State<DetailScreen>
                       ),
                       child: Text(
                         item.kode,
-                        style: TextStyle(
+                        style: const TextStyle(
                           color: Colors.white,
                           fontSize: 12,
                           fontWeight: FontWeight.w700,
@@ -702,22 +847,44 @@ class _DetailScreenState extends State<DetailScreen>
                         style: TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.w600,
-                          color: AppColors.slate900,
+                          color: AppColors.onSurface(context),
                           height: 1.3,
                         ),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
-                    Icon(Icons.chevron_right_rounded,
-                        color: AppColors.slate400, size: 18),
+                    Icon(
+                      Icons.chevron_right_rounded,
+                      color: AppColors.onSurfaceVariant(context),
+                      size: 20,
+                    ),
                   ],
                 ),
-              ),
-            ),
+              );
+            },
           ),
         );
       },
+    );
+  }
+
+  Widget _buildCardContainer(BuildContext context, {required Widget child}) {
+    return Container(
+      padding: const EdgeInsets.all(18),
+      decoration: BoxDecoration(
+        color: AppColors.surfaceContainerLowest(context),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: AppColors.outlineVariant(context).withOpacity(0.3)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.03),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: child,
     );
   }
 }
