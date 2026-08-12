@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.guest')
 
 @section('title', "KBLI {$item->code} - {$item->name}")
 @section('meta_description', Str::limit(strip_tags($item->description), 150))

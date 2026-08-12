@@ -4,39 +4,29 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\KbliItem;
-use App\Models\KbliSection;
-use App\Models\Application;
-use App\Models\ActivityLog;
-use App\Models\News;
+use App\Services\Analytics\AnalyticsService;
 
 class DashboardController extends Controller
 {
+    public function __construct(
+        private AnalyticsService $analyticsService
+    ) {}
+
     public function index()
     {
-        // Statistics
-        $totalItems = KbliItem::count();
-        $totalApplications = Application::count();
-        $pendingApplications = Application::whereIn('status', [
-            \App\Enums\ApplicationStatus::SUBMITTED->value ?? 'DIAJUKAN', 
-            \App\Enums\ApplicationStatus::UNDER_REVIEW->value ?? 'SEDANG DIREVIEW'
-        ])->count();
+        $statistics = $this->analyticsService->getDashboardStatistics();
+        $systemHealth = $this->analyticsService->getSystemHealth();
+        $performanceToday = $this->analyticsService->getPerformanceToday();
         
-        $activeItems = KbliItem::where('is_active', true)->count();
-        $systemStatus = $activeItems > 0 ? 'Beroperasi' : 'Perlu Konfigurasi';
-
-        // Recent Activities
-        $recentActivities = ActivityLog::with('user')
-                            ->orderBy('created_at', 'desc')
-                            ->limit(5)
-                            ->get();
+        $recentActivities = $this->analyticsService->getRecentActivities(10);
+        $recentApplications = $this->analyticsService->getRecentApplications(10);
 
         return view('admin.dashboard', compact(
-            'totalItems',
-            'totalApplications',
-            'pendingApplications',
-            'systemStatus',
-            'recentActivities'
+            'statistics',
+            'systemHealth',
+            'performanceToday',
+            'recentActivities',
+            'recentApplications'
         ));
     }
 }

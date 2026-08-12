@@ -10,7 +10,7 @@
                 @endif
                 <div class="relative flex space-x-3">
                     <div>
-                        <span class="h-8 w-8 rounded-full flex items-center justify-center ring-8 ring-white
+                        <span class="h-8 w-8 rounded-full flex items-center justify-center  
                             {{ $history->to_status === 'approved' ? 'bg-green-500' : 
                                ($history->to_status === 'rejected' ? 'bg-red-500' : 
                                ($history->to_status === 'under_review' ? 'bg-yellow-500' : 'bg-gray-400')) }}">

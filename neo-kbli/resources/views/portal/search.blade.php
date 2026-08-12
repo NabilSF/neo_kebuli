@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.guest')
 
 @section('title', $query ? "Hasil Pencarian untuk '" . e($query) . "' - Neo KBLI" : 'Cari Database KBLI')
 

@@ -5,32 +5,18 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Application;
-use App\Http\Requests\UpdateApplicationStatusRequest;
-use App\Services\AdminReviewService;
-use App\Enums\ApplicationStatus;
-use App\Exceptions\InvalidStatusTransitionException;
+use App\Enums\WorkflowState;
+use Exception;
 use Illuminate\Support\Facades\Auth;
 
 class ApplicationController extends Controller
 {
-    /**
-     * Display a paginated listing of all applications.
-     */
     public function index(Request $request)
     {
-        // Use Product Schema Only
         $query = Application::with([
             'kbliItem:id,code,name',
             'user:id,name'
-        ])->select([
-            'id', 
-            'tracking_code', 
-            'status', 
-            'product_name', 
-            'submitted_at', 
-            'kbli_item_id',
-            'user_id'
-        ]);
+        ])->select(['id', 'tracking_code', 'product_name', 'status', 'submitted_at', 'created_at', 'kbli_item_id', 'user_id']);
 
         if ($search = $request->input('search')) {
             $query->where(function ($q) use ($search) {
@@ -43,50 +29,52 @@ class ApplicationController extends Controller
             $query->where('status', $statusFilter);
         }
 
-        $applications = $query->orderBy('submitted_at', 'desc')->paginate(15);
+        $applications = $query->orderBy('submitted_at', 'desc')->paginate(15)->withQueryString();
+        $statuses = WorkflowState::cases();
 
-        return view('admin.applications.index', compact('applications'));
+        return view('admin.applications.index', compact('applications', 'statuses'));
     }
 
-    /**
-     * Display the comprehensive details of a specific application.
-     */
     public function show(Application $application)
     {
         $application->load([
             'reviewer',
-            'histories.actor',
+            'activityLogs.user',
             'media',
-            'kbliItem'
+            'kbliItem.section'
         ]);
 
-        return view('admin.applications.show', compact('application'));
+        $reviewers = \App\Models\User::where('is_active', true)
+            ->whereHas('roles', function ($q) {
+                $q->whereIn('name', ['Reviewer', 'reviewer', 'operator', 'Operator', 'Admin', 'admin', 'Super Admin', 'super-admin']);
+            })
+            ->pluck('name', 'id');
+        return view('admin.applications.show', compact('application', 'reviewers'));
     }
 
-    /**
-     * Delegate application status mutation to the orchestrating service.
-     */
-    public function updateStatus(
-        UpdateApplicationStatusRequest $request, 
+    public function addMemo(
+        Request $request, 
         Application $application, 
-        AdminReviewService $reviewService
+        \App\Services\ActivityLogService $activityLogService
     ) {
-        $validated = $request->validated();
+        $validated = $request->validate([
+            'comment' => ['required', 'string']
+        ]);
         
-        $targetStatus = ApplicationStatus::from($validated['status']);
-
         try {
-            $reviewService->updateStatus(
-                $application,
-                $targetStatus,
-                $validated['notes'] ?? null,
-                Auth::user()
+            $activityLogService->logActivity(
+                entity: $application,
+                action: 'Catatan Internal (Memo) Ditambahkan',
+                oldState: $application->status,
+                newState: $application->status,
+                notes: $validated['comment'],
+                userId: Auth::id()
             );
 
-            return redirect()->back()->with('success', 'Status permohonan berhasil diperbarui.');
+            return redirect()->back()->with('success', 'Catatan internal berhasil disimpan.');
             
-        } catch (InvalidStatusTransitionException $e) {
-            return redirect()->back()->withErrors(['status' => $e->getMessage()]);
+        } catch (Exception $e) {
+            return redirect()->back()->with('error', $e->getMessage());
         }
     }
 }

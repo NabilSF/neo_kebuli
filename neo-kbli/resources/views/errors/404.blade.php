@@ -31,7 +31,7 @@
         <!-- Pencarian Cepat -->
         <form action="{{ route('search') }}" method="GET" class="mb-6">
             <div class="flex gap-2 max-w-sm mx-auto">
-                <input type="text" name="q" placeholder="Cari kode KBLI..." class="flex-1 px-4 py-2.5 rounded-xl border border-gray-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-primary-300 focus:border-primary-400 transition-all">
+                <input type="text" name="q" placeholder="Cari kode KBLI..." class="flex-1 px-4 py-2.5 rounded-xl border border-gray-200 bg-white text-sm     transition-all">
                 <button type="submit" class="px-4 py-2.5 bg-primary-600 hover:bg-primary-700 text-white rounded-xl text-sm font-medium transition-colors">
                     Cari
                 </button>

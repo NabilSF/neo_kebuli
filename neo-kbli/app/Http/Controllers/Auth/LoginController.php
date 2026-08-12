@@ -15,10 +15,16 @@ class LoginController extends Controller
 
     public function login(Request $request)
     {
-        $credentials = $request->validate([
-            'email' => ['required', 'email'],
+        $request->validate([
+            'login' => ['required', 'string'],
             'password' => ['required'],
         ]);
+
+        $loginField = filter_var($request->input('login'), FILTER_VALIDATE_EMAIL) ? 'email' : 'name';
+        $credentials = [
+            $loginField => $request->input('login'),
+            'password' => $request->input('password')
+        ];
 
         $remember = $request->boolean('remember');
 
@@ -31,7 +37,7 @@ class LoginController extends Controller
                 $request->session()->invalidate();
                 $request->session()->regenerateToken();
                 return back()->withErrors([
-                    'email' => 'Akun Anda telah dinonaktifkan. Hubungi administrator untuk informasi lebih lanjut.',
+                    'login' => 'Akun Anda telah dinonaktifkan. Hubungi administrator untuk informasi lebih lanjut.',
                 ]);
             }
 
@@ -53,16 +59,16 @@ class LoginController extends Controller
                 'ip_address' => $request->ip(),
             ]);
 
-            if ($user->hasAnyRole(['super-admin', 'superadmin', 'admin', 'operator'])) {
-                return redirect()->intended(route('admin.dashboard'));
+            if ($user->hasAnyRole(['Super Admin', 'super-admin', 'Admin', 'Administrator', 'Operator'])) {
+                return redirect()->route('admin.dashboard');
             }
 
-            return redirect()->intended(route('home'));
+            return redirect()->route('dashboard');
         }
 
         return back()->withErrors([
-            'email' => 'Kredensial yang diberikan tidak cocok dengan data kami.',
-        ])->onlyInput('email');
+            'login' => 'Kredensial yang diberikan tidak cocok dengan data kami.',
+        ])->onlyInput('login');
     }
 
     public function logout(Request $request)

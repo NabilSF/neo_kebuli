@@ -20,12 +20,46 @@ class KbliApiController extends BaseApiController
         $perPage = (int) $request->input('per_page', 50);
         $page = (int) $request->input('page', 1);
 
-        $categories = \Illuminate\Support\Facades\Cache::remember("kbli_categories_p{$page}_l{$perPage}", 3600, function () use ($perPage) {
-            return KbliCategory::where('is_active', true)
+        $cacheKey = \App\Helpers\CacheKey::kbliCategories($page, $perPage);
+        $payload = \Illuminate\Support\Facades\Cache::remember($cacheKey, 3600, function () use ($perPage) {
+            $paginator = KbliCategory::where('is_active', true)
                 ->withCount('sections')
+                ->select(['id', 'code', 'name', 'description'])
                 ->orderBy('sort_order', 'asc')
                 ->paginate($perPage);
+
+            return [
+                'items' => collect($paginator->items())->map(function ($item) {
+                    return [
+                        'id' => $item->id,
+                        'code' => $item->code,
+                        'name' => $item->name,
+                        'description' => $item->description,
+                        'sections_count' => $item->sections_count,
+                    ];
+                })->toArray(),
+                'total' => $paginator->total(),
+                'per_page' => $paginator->perPage(),
+                'current_page' => $paginator->currentPage(),
+            ];
         });
+
+        $items = collect($payload['items'])->map(function ($item) {
+            $obj = new \stdClass();
+            $obj->id = $item['id'];
+            $obj->code = $item['code'];
+            $obj->name = $item['name'];
+            $obj->description = $item['description'];
+            $obj->sections_count = $item['sections_count'];
+            return $obj;
+        });
+
+        $categories = new \Illuminate\Pagination\LengthAwarePaginator(
+            $items,
+            $payload['total'],
+            $payload['per_page'],
+            $payload['current_page']
+        );
 
         return $this->success(
             KbliCategoryResource::collection($categories),

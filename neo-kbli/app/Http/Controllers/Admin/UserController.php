@@ -13,7 +13,8 @@ class UserController extends Controller
 {
     public function index(Request $request)
     {
-        $query = User::with('roles');
+        $query = User::with('roles:id,name')
+            ->select(['id', 'name', 'email', 'is_active', 'created_at', 'phone']);
 
         if ($search = $request->input('search')) {
             $query->where(function ($q) use ($search) {
@@ -24,19 +25,24 @@ class UserController extends Controller
 
         if ($roleFilter = $request->input('role')) {
             $query->whereHas('roles', function ($q) use ($roleFilter) {
-                $q->where('slug', $roleFilter);
+                $q->where('name', $roleFilter);
             });
         }
 
         $users = $query->orderBy('created_at', 'desc')->paginate(15);
-        $roles = Role::all();
+        
+        $roles = Role::select('id', 'name')->get()
+            ->unique(fn($r) => strtolower($r->name))
+            ->values();
 
         return view('admin.users.index', compact('users', 'roles'));
     }
 
     public function create()
     {
-        $roles = Role::all();
+        $roles = Role::select('id', 'name')->get()
+            ->unique(fn($r) => strtolower($r->name))
+            ->values();
         return view('admin.users.create', compact('roles'));
     }
 
@@ -45,7 +51,7 @@ class UserController extends Controller
         $request->validate([
             'name' => 'required|string|max:150',
             'email' => 'required|email|unique:users,email',
-            'password' => ['required', 'confirmed', Password::min(8)],
+            'password' => ['required', 'confirmed', Password::min(8)->letters()->numbers()],
             'phone' => 'nullable|string|max:20',
             'role_id' => 'required|exists:roles,id',
         ]);
@@ -66,7 +72,9 @@ class UserController extends Controller
     public function edit($id)
     {
         $user = User::with('roles')->findOrFail($id);
-        $roles = Role::all();
+        $roles = Role::select('id', 'name')->get()
+            ->unique(fn($r) => strtolower($r->name))
+            ->values();
         return view('admin.users.edit', compact('user', 'roles'));
     }
 
@@ -101,7 +109,7 @@ class UserController extends Controller
     public function resetPassword(Request $request, $id)
     {
         $request->validate([
-            'password' => ['required', 'confirmed', Password::min(8)],
+            'password' => ['required', 'confirmed', Password::min(8)->letters()->numbers()],
         ]);
 
         $user = User::findOrFail($id);

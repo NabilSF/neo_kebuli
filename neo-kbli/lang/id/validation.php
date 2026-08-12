@@ -210,7 +210,7 @@ return [
         'product_material'      => 'bahan produk',
         'production_process'    => 'proses produksi',
         'product_description'   => 'deskripsi produk',
-        'saker_address'         => 'alamat SAKER',
+        'saker_address'         => 'kode satker',
         'document'              => 'dokumen lampiran',
         'terms'                 => 'syarat dan ketentuan',
     ],

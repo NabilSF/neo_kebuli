@@ -32,19 +32,19 @@
             @method('PUT')
             <div>
                 <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Nama Lengkap</label>
-                <input type="text" name="name" id="name" value="{{ old('name', $user->name) }}" required class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:border-primary-500 focus:ring focus:ring-primary-200">
+                <input type="text" name="name" id="name" value="{{ old('name', $user->name) }}" required class="w-full px-4 py-2.5 rounded-lg border border-border    ">
             </div>
             <div>
                 <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                <input type="email" name="email" id="email" value="{{ old('email', $user->email) }}" required class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:border-primary-500 focus:ring focus:ring-primary-200">
+                <input type="email" name="email" id="email" value="{{ old('email', $user->email) }}" required class="w-full px-4 py-2.5 rounded-lg border border-border    ">
             </div>
             <div>
                 <label for="phone" class="block text-sm font-medium text-gray-700 mb-1">Nomor Telepon</label>
-                <input type="text" name="phone" id="phone" value="{{ old('phone', $user->phone) }}" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:border-primary-500 focus:ring focus:ring-primary-200">
+                <input type="text" name="phone" id="phone" value="{{ old('phone', $user->phone) }}" class="w-full px-4 py-2.5 rounded-lg border border-border    ">
             </div>
             <div>
                 <label for="role_id" class="block text-sm font-medium text-gray-700 mb-1">Peran</label>
-                <select name="role_id" id="role_id" required class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:border-primary-500 focus:ring focus:ring-primary-200">
+                <select name="role_id" id="role_id" required class="w-full px-4 py-2.5 rounded-lg border border-border    ">
                     @foreach($roles as $role)
                     <option value="{{ $role->id }}" {{ $user->roles->contains('id', $role->id) ? 'selected' : '' }}>{{ $role->name }}</option>
                     @endforeach
@@ -52,13 +52,13 @@
             </div>
             <div>
                 <label for="is_active" class="block text-sm font-medium text-gray-700 mb-1">Status Akun</label>
-                <select name="is_active" id="is_active" required class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:border-primary-500 focus:ring focus:ring-primary-200">
+                <select name="is_active" id="is_active" required class="w-full px-4 py-2.5 rounded-lg border border-border    ">
                     <option value="1" {{ $user->is_active ? 'selected' : '' }}>Aktif</option>
                     <option value="0" {{ !$user->is_active ? 'selected' : '' }}>Nonaktif</option>
                 </select>
             </div>
             <div class="pt-4 border-t border-gray-200">
-                <button type="submit" class="px-6 py-2 bg-primary-600 text-white text-sm font-semibold rounded-md hover:bg-primary-700 transition-colors border border-primary-600">Simpan Perubahan</button>
+                <button type="submit" class="px-6 py-2 bg-primary text-white text-sm font-semibold rounded-md hover:bg-primary-hover transition-colors border border-primary">Simpan Perubahan</button>
             </div>
         </form>
     </div>
@@ -73,11 +73,11 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                     <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Kata Sandi Baru</label>
-                    <input type="password" name="password" id="password" required class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:border-primary-500 focus:ring focus:ring-primary-200">
+                    <input type="password" name="password" id="password" required class="w-full px-4 py-2.5 rounded-lg border border-border    ">
                 </div>
                 <div>
                     <label for="password_confirmation" class="block text-sm font-medium text-gray-700 mb-1">Konfirmasi Kata Sandi</label>
-                    <input type="password" name="password_confirmation" id="password_confirmation" required class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:border-primary-500 focus:ring focus:ring-primary-200">
+                    <input type="password" name="password_confirmation" id="password_confirmation" required class="w-full px-4 py-2.5 rounded-lg border border-border    ">
                 </div>
             </div>
             <div class="pt-4 border-t border-gray-200">

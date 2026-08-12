@@ -6,12 +6,12 @@
     {{-- Header --}}
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-            <h1 class="text-2xl font-bold text-gray-900">Manajemen Operator</h1>
-            <p class="text-sm text-gray-500 mt-1">Kelola akun operator dan penugasan peran.</p>
+            <h1 class="text-2xl font-bold text-gray-900">Manajemen Pengguna</h1>
+            <p class="text-sm text-gray-500 mt-1">Kelola akun pengguna dan penugasan peran.</p>
         </div>
-        <a href="{{ route('admin.users.create') }}" class="inline-flex items-center px-4 py-2 bg-primary-600 text-white text-sm font-semibold rounded-md hover:bg-primary-700 transition-colors border border-primary-600">
+        <a href="{{ route('admin.users.create') }}" class="inline-flex items-center px-4 py-2 bg-primary text-white text-sm font-semibold rounded-md hover:bg-primary-hover transition-colors border border-primary">
             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
-            Tambah Operator
+            Tambah Pengguna
         </a>
     </div>
 
@@ -22,11 +22,11 @@
     {{-- Filters --}}
     <div class="bg-white rounded-md border border-gray-200 p-4">
         <form method="GET" class="flex flex-col sm:flex-row gap-3">
-            <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari berdasarkan nama atau email..." class="flex-1 px-4 py-2.5 rounded-lg border border-gray-300 text-sm focus:border-primary-500 focus:ring focus:ring-primary-200">
-            <select name="role" class="px-4 py-2.5 rounded-lg border border-gray-300 text-sm focus:border-primary-500 focus:ring focus:ring-primary-200">
+            <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari berdasarkan nama atau email..." class="flex-1 px-4 py-2.5 rounded-lg border border-border text-sm    ">
+            <select name="role" class="px-4 py-2.5 rounded-lg border border-border text-sm    ">
                 <option value="">Semua Peran</option>
                 @foreach($roles as $role)
-                <option value="{{ $role->slug }}" {{ request('role') == $role->slug ? 'selected' : '' }}>{{ $role->name }}</option>
+                <option value="{{ $role->name }}" {{ request('role') == $role->name ? 'selected' : '' }}>{{ $role->name }}</option>
                 @endforeach
             </select>
             <button type="submit" class="px-5 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium rounded-lg border border-gray-300 transition-colors">Filter</button>
@@ -53,7 +53,7 @@
                         <td class="px-6 py-4 text-gray-600">{{ $user->email }}</td>
                         <td class="px-6 py-4">
                             @foreach($user->roles as $role)
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-primary-50 text-primary-700 border border-primary-100">{{ $role->name }}</span>
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-primary/10 text-primary border border-primary/20">{{ $role->name }}</span>
                             @endforeach
                         </td>
                         <td class="px-6 py-4">
@@ -64,7 +64,7 @@
                             @endif
                         </td>
                         <td class="px-6 py-4 text-right space-x-2">
-                            <a href="{{ route('admin.users.edit', $user->id) }}" class="text-primary-600 hover:text-primary-800 text-xs font-medium transition-colors">Ubah</a>
+                            <a href="{{ route('admin.users.edit', $user->id) }}" class="text-primary hover:text-primary-hover text-xs font-medium transition-colors">Ubah</a>
                             <form method="POST" action="{{ route('admin.users.toggleActive', $user->id) }}" class="inline" onsubmit="return confirm('Ubah status aktif pengguna ini?')">
                                 @csrf
                                 <button type="submit" class="text-xs font-medium {{ $user->is_active ? 'text-red-600 hover:text-red-800' : 'text-green-600 hover:text-green-800' }} transition-colors">
@@ -81,7 +81,7 @@
                                     <svg class="w-8 h-8 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
                                 </div>
                                 <h3 class="text-lg font-medium text-gray-900">Belum ada pengguna</h3>
-                                <p class="text-gray-500 mt-1 max-w-xs mx-auto text-sm">Klik tombol "Tambah Operator" untuk menambahkan akun baru ke sistem.</p>
+                                <p class="text-gray-500 mt-1 max-w-xs mx-auto text-sm">Klik tombol "Tambah Pengguna" untuk menambahkan akun baru ke sistem.</p>
                             </div>
                         </td>
                     </tr>

@@ -32,7 +32,7 @@ class Application extends Model
     protected $casts = [
         'reviewed_at' => 'datetime',
         'submitted_at' => 'datetime',
-        'status' => \App\Enums\ApplicationStatus::class,
+        'status' => \App\Enums\WorkflowState::class,
     ];
 
     public function kbliItem()
@@ -60,5 +60,10 @@ class Application extends Model
     public function media()
     {
         return $this->hasMany(Media::class);
+    }
+
+    public function activityLogs()
+    {
+        return $this->morphMany(ActivityLog::class, 'subject');
     }
 }

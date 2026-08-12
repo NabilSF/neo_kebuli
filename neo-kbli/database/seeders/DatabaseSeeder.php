@@ -8,25 +8,14 @@ class DatabaseSeeder extends Seeder
 {
     /**
      * Seed the application's database.
-     *
-     * Seeding order matters due to foreign key constraints:
-     * 1. RoleSeeder          — must exist before AdminSeeder assigns roles
-     * 2. PermissionSeeder    — must exist before role assignments
-     * 3. AdminSeeder         — depends on roles
-     * 4. NewsCategorySeeder  — independent
-     * 5. KbliSeeder          — independent (categories → sections → items)
-     *
+     * Initialize system data directly via migrations.
+     * Use factory states or dedicated test classes for tests.
      * All seeders are idempotent. Running `php artisan db:seed` multiple
      * times will NOT create duplicate data.
      */
     public function run(): void
     {
-        $this->call([
-            RoleSeeder::class,
-            PermissionSeeder::class,
-            AdminSeeder::class,
-            NewsCategorySeeder::class,
-            KbliSeeder::class,
-        ]);
+        // Production initialization is handled via migrations.
+        // Tests needing specific data should setup their own data via factories or explicit seeders.
     }
 }

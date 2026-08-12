@@ -11,9 +11,9 @@
             <p class="text-sm text-gray-500 mt-0.5">Daftar kode klasifikasi baku lapangan usaha Indonesia.</p>
         </div>
 
-        <form action="{{ route('admin.kbli.items') }}" method="GET" class="w-full md:w-auto flex flex-col md:flex-row gap-2">
+        <form action="{{ route('admin.kbli.items.index') }}" method="GET" class="w-full md:w-auto flex flex-col md:flex-row gap-2">
             <select name="category_id"
-                class="block px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-primary-500 bg-white"
+                class="block px-3 py-2 border border-gray-300 rounded-md text-sm    bg-white"
                 onchange="this.form.submit()">
                 <option value="">Semua Kategori</option>
                 @foreach($categories as $category)
@@ -24,7 +24,7 @@
             </select>
 
             <select name="section_id"
-                class="block px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-primary-500 bg-white"
+                class="block px-3 py-2 border border-gray-300 rounded-md text-sm    bg-white"
                 onchange="this.form.submit()">
                 <option value="">Semua Seksi</option>
                 @foreach($sections as $section)
@@ -38,7 +38,7 @@
 
             <div class="flex gap-2">
                 <input type="text" name="search" value="{{ request('search') }}"
-                    class="block w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-primary-500"
+                    class="block w-full px-3 py-2 border border-gray-300 rounded-md text-sm   "
                     placeholder="Cari KBLI...">
                 <button type="submit"
                     class="px-4 py-2 bg-primary-600 text-white text-sm font-medium rounded-md hover:bg-primary-700 border border-primary-600 whitespace-nowrap">

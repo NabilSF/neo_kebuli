@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.guest')
 
 @section('title', "Pelacakan: {$application->tracking_code}")
 
@@ -56,8 +56,13 @@
                 </div>
                 
                 <div class="sm:col-span-1">
-                    <dt class="text-sm font-medium text-gray-500">Alamat SAKER / Usaha</dt>
-                    <dd class="mt-1 text-sm font-semibold text-gray-900">{{ $application->saker_address ?? 'N/A' }}</dd>
+                    <dt class="text-sm font-medium text-gray-500">Kode Satker</dt>
+                    <dd class="mt-1 text-sm font-semibold text-gray-900">
+                        @php
+                            $satkerName = config('satker.' . $application->saker_address);
+                            echo $satkerName ? $application->saker_address . ' — ' . $satkerName : ($application->saker_address ?? 'N/A');
+                        @endphp
+                    </dd>
                 </div>
 
                 <div class="sm:col-span-2">
@@ -93,7 +98,7 @@
                             @endif
                             <div class="relative flex space-x-3">
                                 <div>
-                                    <span class="h-8 w-8 rounded-full {{ $loop->first ? 'bg-primary-500 ring-4 ring-primary-50' : 'bg-gray-300 ring-4 ring-white' }} flex items-center justify-center text-white">
+                                    <span class="h-8 w-8 rounded-full {{ $loop->first ? 'bg-primary-500  ' : 'bg-gray-300  ' }} flex items-center justify-center text-white">
                                         @if($loop->first)
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
                                         @else

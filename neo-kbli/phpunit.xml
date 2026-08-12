@@ -32,5 +32,9 @@
         <env name="PULSE_ENABLED" value="false"/>
         <env name="TELESCOPE_ENABLED" value="false"/>
         <env name="NIGHTWATCH_ENABLED" value="false"/>
+        <env name="INITIAL_SUPERADMIN_PASSWORD" value="Testing123!"/>
+        <env name="INITIAL_ADMIN_PASSWORD" value="Testing123!"/>
+        <env name="INITIAL_OPERATOR_PASSWORD" value="Testing123!"/>
+        <env name="INITIAL_USER_PASSWORD" value="Testing123!"/>
     </php>
 </phpunit>

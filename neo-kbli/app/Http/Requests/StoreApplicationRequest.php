@@ -30,7 +30,7 @@ class StoreApplicationRequest extends FormRequest
             'product_material' => 'required|string',
             'production_process' => 'required|string',
             'product_description' => 'nullable|string',
-            'saker_address' => 'required|string',
+            'saker_address' => ['required', 'string', \Illuminate\Validation\Rule::in(array_keys(config('satker')))],
             'document' => 'required|file|mimes:pdf,jpg,png|max:5120',
         ];
     }
@@ -45,6 +45,7 @@ class StoreApplicationRequest extends FormRequest
         return [
             'kbli_item_id.required' => 'Klasifikasi KBLI wajib dipilih.',
             'kbli_item_id.exists' => 'Klasifikasi KBLI tidak valid.',
+            'saker_address.in' => 'Kode Satker yang dipilih tidak valid atau tidak terdaftar pada Master Data.',
             'document.mimes' => 'Dokumen lampiran harus berformat PDF, JPG, atau PNG.',
             'document.max' => 'Ukuran file dokumen tidak boleh melebihi 5MB.',
         ];

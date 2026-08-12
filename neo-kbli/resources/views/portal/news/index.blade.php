@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.guest')
 
 @section('title', 'Berita & Pengumuman - Neo KBLI')
 @section('meta_description', 'Informasi terbaru mengenai KBLI, regulasi, pembaruan sistem, dan pengumuman resmi dari Neo KBLI.')
@@ -100,7 +100,7 @@
                 <form action="{{ route('news.index') }}" method="GET">
                     <div class="flex gap-2">
                         <input type="text" name="q" value="{{ request('q') }}"
-                            class="block w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-primary-500"
+                            class="block w-full px-3 py-2 border border-gray-300 rounded-md text-sm   "
                             placeholder="Kata kunci...">
                         <button type="submit" class="px-3 py-2 bg-primary-600 text-white text-sm font-medium rounded-md hover:bg-primary-700 border border-primary-600">Cari</button>
                     </div>
@@ -110,9 +110,6 @@
             {{-- Berita Terbaru --}}
             <div class="bg-white border border-gray-200 rounded-md p-4 sm:p-5">
                 <h3 class="text-sm font-semibold text-gray-800 mb-3 border-b border-gray-100 pb-2">Berita Terbaru</h3>
-                @php
-                    $latestNews = \App\Models\News::where('status','published')->latest()->limit(5)->get();
-                @endphp
                 @forelse($latestNews as $latest)
                 <div class="py-2 border-b border-gray-50 last:border-0">
                     <a href="{{ route('news.show', $latest->slug) }}" class="text-sm text-gray-700 hover:text-primary-700 font-medium line-clamp-2 leading-snug">{{ $latest->title }}</a>
@@ -126,9 +123,6 @@
             {{-- Kategori Berita --}}
             <div class="bg-white border border-gray-200 rounded-md p-4 sm:p-5">
                 <h3 class="text-sm font-semibold text-gray-800 mb-3 border-b border-gray-100 pb-2">Kategori Berita</h3>
-                @php
-                    $newsCategories = \App\Models\NewsCategory::withCount(['news' => function($q){ $q->where('status','published'); }])->get();
-                @endphp
                 @forelse($newsCategories as $cat)
                 <div class="flex items-center justify-between py-1.5 border-b border-gray-50 last:border-0">
                     <a href="{{ route('news.index', ['category' => $cat->slug]) }}" class="text-sm text-gray-700 hover:text-primary-700">{{ $cat->name }}</a>

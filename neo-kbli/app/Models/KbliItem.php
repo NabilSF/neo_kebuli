@@ -36,4 +36,14 @@ class KbliItem extends Model
             'category_id' // Local key on kbli_sections table
         );
     }
+
+    public function activityLogs()
+    {
+        return $this->morphMany(ActivityLog::class, 'subject');
+    }
+
+    public function applications()
+    {
+        return $this->hasMany(Application::class, 'kbli_item_id');
+    }
 }

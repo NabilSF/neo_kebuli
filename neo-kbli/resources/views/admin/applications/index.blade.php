@@ -1,112 +1,87 @@
-@extends('layouts.admin')
+<x-layouts.admin>
+    <x-slot name="header">
+        <x-workspace.header 
+            title="Daftar Pengajuan" 
+            description="Manajemen seluruh transaksi pengajuan KBLI dari pengguna."
+        />
+    </x-slot>
 
-@section('title', 'Antrian Tinjauan Permohonan')
-
-@section('content')
-<div class="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
-    <div>
-        <h2 class="text-2xl font-bold text-gray-900">Antrian Tinjauan Permohonan</h2>
-        <p class="text-gray-500 mt-1">Kelola dan tinjau pengajuan KBLI dari pemohon.</p>
-    </div>
-</div>
-
-<!-- Filter Box -->
-<div class="bg-white rounded-md border border-gray-200 p-6 mb-6">
-    <form action="{{ route('admin.applications.index') }}" method="GET" class="flex flex-col md:flex-row gap-4">
-        <div class="flex-1">
-            <label for="search" class="sr-only">Cari</label>
-            <input type="text" name="search" id="search" value="{{ request('search') }}" placeholder="Cari berdasarkan kode pelacakan, produk, atau pemohon..." class="w-full rounded-lg border-gray-300 focus:border-primary-500 focus:ring-primary-500">
-        </div>
-        <div class="w-full md:w-64">
-            <label for="status" class="sr-only">Status</label>
-            <select name="status" id="status" class="w-full rounded-lg border-gray-300 focus:border-primary-500 focus:ring-primary-500">
-                <option value="">Semua Status</option>
-                <option value="submitted" {{ request('status') === 'submitted' ? 'selected' : '' }}>Diajukan</option>
-                <option value="under_review" {{ request('status') === 'under_review' ? 'selected' : '' }}>Dalam Peninjauan</option>
-                <option value="need_revision" {{ request('status') === 'need_revision' ? 'selected' : '' }}>Perlu Revisi</option>
-                <option value="approved" {{ request('status') === 'approved' ? 'selected' : '' }}>Disetujui</option>
-                <option value="rejected" {{ request('status') === 'rejected' ? 'selected' : '' }}>Ditolak</option>
-            </select>
-        </div>
-        <button type="submit" class="inline-flex justify-center items-center px-4 py-2 bg-primary-600 text-white font-medium rounded-md hover:bg-primary-700 border border-primary-600">
-            Saring
-        </button>
-        @if(request()->hasAny(['search', 'status']))
-            <a href="{{ route('admin.applications.index') }}" class="inline-flex justify-center items-center px-4 py-2 bg-white text-gray-700 font-medium rounded-md hover:bg-gray-50 border border-gray-300">
-                Hapus Filter
-            </a>
-        @endif
-    </form>
-</div>
-
-<!-- Data Table -->
-<div class="bg-white rounded-md border border-gray-200 overflow-hidden">
-    @if($applications->count() > 0)
-        <div class="overflow-x-auto">
-            <table class="w-full text-left border-collapse">
-                <thead>
-                    <tr class="bg-gray-50 border-b border-gray-200 text-xs uppercase tracking-wider text-gray-500 font-semibold">
-                        <th class="px-6 py-4">Kode Pelacakan</th>
-                        <th class="px-6 py-4">Target KBLI</th>
-                        <th class="px-6 py-4">Produk / Usaha</th>
-                        <th class="px-6 py-4">Pemohon</th>
-                        <th class="px-6 py-4">Status</th>
-                        <th class="px-6 py-4">Tanggal Pengajuan</th>
-                        <th class="px-6 py-4 text-right">Aksi</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-200">
-                    @foreach($applications as $application)
-                    <tr class="hover:bg-gray-50 transition-colors">
-                        <td class="px-6 py-4">
-                            <span class="font-mono text-sm font-medium text-gray-900">{{ $application->tracking_code }}</span>
-                        </td>
-                        <td class="px-6 py-4">
-                            <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800">
-                                {{ $application->kbliItem->code ?? 'N/A' }}
-                            </span>
-                        </td>
-                        <td class="px-6 py-4">
-                            <span class="text-sm text-gray-900 font-medium line-clamp-1">
-                                {{ $application->product_name ?? 'N/A' }}
-                            </span>
-                        </td>
-                        <td class="px-6 py-4">
-                            <span class="text-sm text-gray-600">
-                                {{ $application->applicant->name ?? 'N/A' }}
-                            </span>
-                        </td>
-                        <td class="px-6 py-4">
-                            <x-application.status-badge :status="$application->status" size="sm" />
-                        </td>
-                        <td class="px-6 py-4">
-                            <span class="text-sm text-gray-500">{{ $application->submitted_at->format('d M Y') }}</span>
-                        </td>
-                        <td class="px-6 py-4 text-right">
-                            <a href="{{ route('admin.applications.show', $application->id) }}" class="inline-flex items-center text-sm font-medium text-primary-600 hover:text-primary-800 transition-colors">
-                                Tinjau &rarr;
-                            </a>
-                        </td>
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
-        <!-- Pagination -->
-        <div class="px-6 py-4 border-t border-gray-200">
-            {{ $applications->withQueryString()->links() }}
-        </div>
-    @else
-        <div class="p-12 text-center">
-            <svg class="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-            <h3 class="text-lg font-bold text-gray-900 mb-1">Tidak Ada Permohonan</h3>
-            <p class="text-gray-500">Saat ini tidak ada pengajuan yang sesuai dengan kriteria Anda.</p>
-            @if(request()->hasAny(['search', 'status']))
-                <a href="{{ route('admin.applications.index') }}" class="mt-4 inline-flex justify-center items-center px-4 py-2 bg-white text-primary-700 font-medium rounded-md hover:bg-gray-50 border border-gray-300">
-                    Hapus Filter
-                </a>
+    <x-data-display.table :empty="$applications->isEmpty()">
+        
+        <x-slot name="toolbar">
+            <x-workspace.toolbar>
+                <x-slot name="searchRegion">
+                    <form action="{{ route('admin.applications.index') }}" method="GET" class="w-full sm:max-w-xs">
+                        <x-forms.input name="search" type="search" placeholder="Cari kode tracking..." value="{{ request('search') }}" />
+                        @if(request('status'))
+                            <input type="hidden" name="status" value="{{ request('status') }}">
+                        @endif
+                    </form>
+                </x-slot>
+                <x-slot name="filters">
+                    <form action="{{ route('admin.applications.index') }}" method="GET" class="flex items-center gap-2" id="filter-form">
+                        @if(request('search'))
+                            <input type="hidden" name="search" value="{{ request('search') }}">
+                        @endif
+                        <select name="status" class="text-sm border-border rounded-md   py-2" onchange="document.getElementById('filter-form').submit()">
+                            <option value="">Semua Status</option>
+                            @foreach($statuses as $st)
+                                <option value="{{ $st->value }}" {{ request('status') == $st->value ? 'selected' : '' }}>{{ $st->label() }}</option>
+                            @endforeach
+                        </select>
+                    </form>
+                </x-slot>
+            </x-workspace.toolbar>
+            
+            @if(request('search') || request('status'))
+                <div class="px-4 py-2 border-t border-border bg-slate-50 flex items-center gap-2">
+                    <span class="text-sm text-slate-500">Filter aktif:</span>
+                    @if(request('search'))
+                        <x-data-display.filter-chips label="Pencarian" dismissible="false">{{ request('search') }}</x-data-display.filter-chips>
+                    @endif
+                    @if(request('status'))
+                        <x-data-display.filter-chips label="Status" dismissible="false">{{ \App\Enums\WorkflowState::tryFrom(request('status'))?->label() }}</x-data-display.filter-chips>
+                    @endif
+                    <a href="{{ route('admin.applications.index') }}" class="text-sm text-primary hover:underline ml-2">Hapus Filter</a>
+                </div>
             @endif
-        </div>
-    @endif
-</div>
-@endsection
+        </x-slot>
+
+        <x-slot name="head">
+            <x-data-display.head>Kode Tracking</x-data-display.head>
+            <x-data-display.head>Produk</x-data-display.head>
+            <x-data-display.head>Pemohon</x-data-display.head>
+            <x-data-display.head>Tanggal</x-data-display.head>
+            <x-data-display.head>Status</x-data-display.head>
+            <x-data-display.head action>Aksi</x-data-display.head>
+        </x-slot>
+
+        @foreach($applications as $app)
+            <x-data-display.row>
+                <x-data-display.cell class="font-medium text-primary">{{ $app->tracking_code }}</x-data-display.cell>
+                <x-data-display.cell>
+                    <div class="max-w-xs truncate" title="{{ $app->product_name }}">{{ $app->product_name }}</div>
+                </x-data-display.cell>
+                <x-data-display.cell>{{ $app->user->name ?? '-' }}</x-data-display.cell>
+                <x-data-display.cell>{{ $app->submitted_at ? $app->submitted_at->translatedFormat('d M Y') : '-' }}</x-data-display.cell>
+                <x-data-display.cell>
+                    <x-feedback.status-indicator 
+                        :status="$app->status->label()" 
+                        :variant="$app->status->badgeVariant()" 
+                    />
+                </x-data-display.cell>
+                <x-data-display.cell action>
+                    <div class="flex items-center justify-end gap-3">
+                        <a href="{{ route('admin.applications.show', $app) }}" class="text-primary hover:text-primary-dark">Detail & Tinjau</a>
+                    </div>
+                </x-data-display.cell>
+            </x-data-display.row>
+        @endforeach
+
+        <x-slot name="pagination">
+            <x-data-display.pagination :paginator="$applications" />
+        </x-slot>
+
+    </x-data-display.table>
+
+</x-layouts.admin>

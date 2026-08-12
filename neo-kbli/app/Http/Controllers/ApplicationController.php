@@ -16,12 +16,20 @@ class ApplicationController extends Controller
     {
         $selectedKbli = null;
         if ($request->has('kbli')) {
-            $selectedKbli = KbliItem::where('code', $request->kbli)->first();
+            $selectedKbli = KbliItem::where('code', $request->kbli)
+                ->where('is_active', true)
+                ->first();
         }
         
-        $kblis = KbliItem::where('is_active', true)->select('id', 'code', 'name')->orderBy('code', 'asc')->get();
+        $kblis = KbliItem::where('is_active', true)->select('id', 'code', 'name')->limit(25)->get();
+        if ($selectedKbli && !$kblis->contains('id', $selectedKbli->id)) {
+            $kblis->prepend($selectedKbli);
+        }
         
-        return view('portal.application.create', compact('selectedKbli', 'kblis'));
+        // Master data Satker
+        $satkers = config('satker', []);
+        
+        return view('portal.application.create', compact('selectedKbli', 'kblis', 'satkers'));
     }
 
     public function store(\App\Http\Requests\StoreApplicationRequest $request, \App\Services\SubmissionService $submissionService)

@@ -1,27 +1,177 @@
 @import 'tailwindcss';
+@custom-variant dark (&:where(.dark, .dark *));
 
-@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
-@source '../../storage/framework/views/*.php';
-@source '../**/*.blade.php';
-@source '../**/*.js';
+/* Font Implementation: Plus Jakarta Sans (Local Only) */
+@font-face {
+    font-family: 'Plus Jakarta Sans';
+    src: url('/Font/static/PlusJakartaSans-Regular.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Plus Jakarta Sans';
+    src: url('/Font/static/PlusJakartaSans-Medium.ttf') format('truetype');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Plus Jakarta Sans';
+    src: url('/Font/static/PlusJakartaSans-SemiBold.ttf') format('truetype');
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Plus Jakarta Sans';
+    src: url('/Font/static/PlusJakartaSans-Bold.ttf') format('truetype');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
 
 @theme {
-    --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
-    
-    --color-primary-50: #fff9ed;
-    --color-primary-100: #fff2d3;
-    --color-primary-200: #ffe1a6;
-    --color-primary-300: #ffcb70;
-    --color-primary-400: #ffae34;
-    --color-primary-500: #f7941d; /* primary orange */
-    --color-primary-600: #e2730b;
-    --color-primary-700: #bb540c;
-    --color-primary-800: #944111;
-    --color-primary-900: #773711;
-    --color-primary-950: #401906;
+    --font-sans: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 
-    --color-background: #F9F9F9;
-    --color-success: #10B981;
-    --color-danger: #EF4444;
-    --color-warning: #F59E0B;
+    /* Monochrome / Institutional Semantic Colors */
+    --color-primary: #171717; /* Near Black */
+    --color-primary-hover: #262626; /* Dark Gray */
+    --color-primary-active: #0a0a0a; /* Black */
+    
+    /* ACTION COLOR (Orange for CTA only) */
+    --color-accent: #f97316; /* Orange 500 */
+    --color-accent-hover: #ea580c; /* Orange 600 */
+    --color-accent-active: #c2410c; /* Orange 700 */
+    
+    --color-secondary: #f3f4f6; /* Light Gray */
+    --color-secondary-hover: #e5e7eb;
+    
+    --color-surface: #ffffff; /* White */
+    --color-background: #f8f8f7; /* Very Light Warm Neutral */
+    --color-border: #e5e5e5; /* Neutral Border */
+    
+    /* Semantic Status Colors (Kept minimal but distinct) */
+    --color-success: #15803d; /* Green 700 */
+    --color-success-light: #f0fdf4; /* Green 50 */
+    
+    --color-warning: #b45309; /* Amber 700 */
+    --color-warning-light: #fffbeb; /* Amber 50 */
+    
+    --color-danger: #b91c1c; /* Red 700 */
+    --color-danger-light: #fef2f2; /* Red 50 */
+    
+    --color-info: #0369a1; /* Sky 700 */
+    --color-info-light: #f0f9ff; /* Sky 50 */
+    
+    --color-muted: #737373; /* Neutral 500 */
+    --color-focus: #f97316; /* Orange focus ring */
+    
+    /* Elegant Shadows */
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.03);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.05), 0 4px 6px -4px rgb(0 0 0 / 0.05);
+    
+    /* Subtle Radii */
+    --radius-sm: 0.125rem;
+    --radius-md: 0.25rem;
+    --radius-lg: 0.375rem;
+}
+
+/* Removed media query as JS handles it via .dark class */
+
+:root.dark {
+    --color-white: #181818;
+    --color-gray-50: #111111;
+    --color-gray-100: #181818;
+    --color-gray-200: #222222;
+    --color-gray-300: #303030;
+    --color-gray-400: #525252;
+    --color-gray-500: #a3a3a3;
+    --color-gray-600: #d4d4d4;
+    --color-gray-700: #e5e5e5;
+    --color-gray-800: #f5f5f5;
+    --color-gray-900: #ffffff;
+    
+    --color-slate-50: #111111;
+    --color-slate-100: #181818;
+    --color-slate-200: #222222;
+    --color-slate-300: #303030;
+    --color-slate-400: #525252;
+    --color-slate-500: #a3a3a3;
+    --color-slate-600: #d4d4d4;
+    --color-slate-700: #e5e5e5;
+    --color-slate-800: #f5f5f5;
+    --color-slate-900: #ffffff;
+
+    --color-background: #111111;
+    --color-surface: #181818;
+    --color-border: #303030;
+    --color-primary: #f5f5f5;
+    --color-primary-hover: #d4d4d4;
+    --color-primary-active: #ffffff;
+    --color-muted: #a3a3a3;
+    --color-secondary: #222222;
+    --color-secondary-hover: #303030;
+}
+
+@layer base {
+    body {
+        background-color: var(--color-background);
+        color: var(--color-primary);
+        font-family: var(--font-sans);
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+
+    input, textarea, select, button, a, [tabindex] {
+        outline: none !important;
+        box-shadow: none !important;
+    }
+    
+    input:focus, textarea:focus, select:focus, button:focus,
+    input:focus-visible, textarea:focus-visible, select:focus-visible, button:focus-visible {
+        outline: none !important;
+        box-shadow: none !important;
+        border-color: inherit !important;
+    }
+
+    .focus\:ring, .focus\:ring-1, .focus\:ring-2, .focus\:ring-primary, .focus\:ring-offset-2, .focus\:outline-none, .focus-visible\:ring {
+        box-shadow: none !important;
+        outline: none !important;
+    }
+
+    .focus\:border-primary, .focus\:border-primary-500 {
+        border-color: inherit !important;
+    }
+
+    input:focus, textarea:focus, select:focus, button:focus,
+    input:focus-visible, textarea:focus-visible, select:focus-visible, button:focus-visible,
+    input:active, textarea:active, select:active, button:active {
+        --tw-ring-offset-shadow: 0 0 #0000 !important;
+        --tw-ring-shadow: 0 0 #0000 !important;
+        --tw-ring-color: transparent !important;
+        outline: none !important;
+        box-shadow: none !important;
+    }
+
+    /* Force border to stay default on focus, overriding focus:border-* */
+    input:focus, textarea:focus, select:focus {
+        border-color: var(--color-border) !important;
+    }
+
+    /* Preserve error/success colors on focus */
+    input.border-danger:focus, textarea.border-danger:focus, select.border-danger:focus {
+        border-color: var(--color-danger) !important;
+    }
+    input.border-success:focus, textarea.border-success:focus, select.border-success:focus {
+        border-color: var(--color-success) !important;
+    }
+
+    [x-cloak] {
+        display: none !important;
+    }
 }

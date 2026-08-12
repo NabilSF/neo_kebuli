@@ -29,15 +29,14 @@ class SubmissionService
 
             // 1. Generate core application attributes
             $data['tracking_code'] = $this->generateTrackingCode();
-            // Fallback to DIAJUKAN if enum isn't ready
-            $data['status'] = \App\Enums\ApplicationStatus::SUBMITTED->value ?? 'DIAJUKAN';
+            $data['status'] = \App\Enums\WorkflowState::SUBMITTED->value;
             $data['submitted_at'] = now();
 
             // 2. Persist the main application record
             $application = Application::create($data);
 
-            // 3. Create initial submission history trace
-            $this->createInitialHistory($application->id, $user?->id);
+            // 3. Create initial submission history trace & activity log
+            $this->createInitialHistory($application, $user?->id);
 
             // 4. Process and persist the document if provided
             if ($document) {
@@ -59,14 +58,23 @@ class SubmissionService
         return $code;
     }
 
-    private function createInitialHistory(int $applicationId, ?int $changedBy = null): void
+    private function createInitialHistory(Application $application, ?int $changedBy = null): void
     {
         ApplicationHistory::create([
-            'application_id' => $applicationId,
-            'status' => \App\Enums\ApplicationStatus::SUBMITTED->value ?? 'DIAJUKAN',
+            'application_id' => $application->id,
+            'status' => \App\Enums\WorkflowState::SUBMITTED->value,
             'notes' => 'Application submitted successfully by applicant.',
             'created_by' => $changedBy,
         ]);
+
+        app(ActivityLogService::class)->logActivity(
+            entity: $application,
+            action: 'Permohonan diajukan oleh pemohon',
+            oldState: null,
+            newState: \App\Enums\WorkflowState::SUBMITTED,
+            notes: 'Permohonan berhasil disimpan ke sistem.',
+            userId: $changedBy
+        );
     }
 
     private function processDocument(int $applicationId, UploadedFile $file): void

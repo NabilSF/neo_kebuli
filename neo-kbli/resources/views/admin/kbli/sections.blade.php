@@ -13,7 +13,7 @@
 
         <form action="{{ route('admin.kbli.sections') }}" method="GET" class="w-full md:w-auto flex flex-col md:flex-row gap-2">
             <select name="category_id"
-                class="block px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-primary-500 bg-white"
+                class="block px-3 py-2 border border-gray-300 rounded-md text-sm     bg-white"
                 onchange="this.form.submit()">
                 <option value="">Semua Kategori</option>
                 @foreach($categories as $category)
@@ -25,7 +25,7 @@
 
             <div class="flex gap-2">
                 <input type="text" name="search" value="{{ request('search') }}"
-                    class="block w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-primary-500"
+                    class="block w-full px-3 py-2 border border-gray-300 rounded-md text-sm    "
                     placeholder="Cari seksi...">
                 <button type="submit"
                     class="px-4 py-2 bg-primary-600 text-white text-sm font-medium rounded-md hover:bg-primary-700 border border-primary-600 whitespace-nowrap">
@@ -61,7 +61,7 @@
                         {{ $section->name }}
                     </td>
                     <td class="px-5 py-3 whitespace-nowrap text-center">
-                        <a href="{{ route('admin.kbli.items', ['section_id' => $section->id]) }}"
+                        <a href="{{ route('admin.kbli.items.index', ['section_id' => $section->id]) }}"
                             class="inline-flex items-center px-3 py-1 border border-gray-300 rounded-md text-xs font-medium text-gray-700 bg-white hover:bg-gray-50">
                             Lihat Item
                         </a>

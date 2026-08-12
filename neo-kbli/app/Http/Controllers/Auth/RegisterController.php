@@ -19,9 +19,9 @@ class RegisterController extends Controller
     public function register(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|max:255|unique:users',
             'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8|confirmed',
+            'password' => ['required', 'string', 'confirmed', \Illuminate\Validation\Rules\Password::defaults()],
             'terms' => 'required|accepted',
         ]);
 
@@ -32,8 +32,8 @@ class RegisterController extends Controller
             'is_active' => true,
         ]);
 
-        // Assign 'user' role if it exists
-        $userRole = Role::where('slug', 'user')->first();
+        // Assign 'Applicant' role if it exists
+        $userRole = Role::where('name', 'Applicant')->orWhere('name', 'user')->first();
         if ($userRole) {
             $user->roles()->attach($userRole->id);
         }
@@ -43,6 +43,6 @@ class RegisterController extends Controller
         // Send Welcome Notification
         $user->notify(new \App\Notifications\WelcomeEmailNotification());
 
-        return redirect()->route('home')->with('success', 'Akun berhasil didaftarkan. Selamat datang!');
+        return redirect()->route('dashboard')->with('success', 'Akun berhasil didaftarkan. Selamat datang!');
     }
 }

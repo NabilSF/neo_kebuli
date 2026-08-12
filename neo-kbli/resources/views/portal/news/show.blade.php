@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.guest')
 
 @section('title', $article->title . ' - Neo KBLI')
 @section('meta_description', $article->excerpt ?? Str::limit(strip_tags($article->content), 150))

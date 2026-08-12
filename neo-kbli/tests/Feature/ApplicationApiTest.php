@@ -56,7 +56,7 @@ class ApplicationApiTest extends TestCase
             'product_material'    => 'Bahan Baku Sample',
             'production_process'  => 'Proses Produksi Sample',
             'product_description' => 'Deskripsi Produk Sample',
-            'saker_address'       => 'Alamat Saker Sample',
+            'saker_address'       => '3300',
             'status'              => 'submitted',
             'submitted_at'        => now(),
         ], $attributes));
@@ -77,7 +77,7 @@ class ApplicationApiTest extends TestCase
                 'product_material'    => 'Jagung Unggul',
                 'production_process'  => 'Pengeringan & Pemilahan',
                 'product_description' => 'Benih kualitas tinggi',
-                'saker_address'       => 'Jl. Merdeka No 1',
+                'saker_address'       => '3300',
                 'document'            => $file,
             ]);
 

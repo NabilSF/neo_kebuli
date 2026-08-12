@@ -18,9 +18,23 @@ class ActivityLog extends Model
         'action',
         'subject_type',
         'subject_id',
+        'old_status',
+        'new_status',
+        'notes',
+        'metadata',
         'ip_address',
         'properties',
     ];
+
+    protected $casts = [
+        'metadata' => 'array',
+        'properties' => 'array',
+    ];
+
+    public function subject()
+    {
+        return $this->morphTo();
+    }
 
     public function user()
     {

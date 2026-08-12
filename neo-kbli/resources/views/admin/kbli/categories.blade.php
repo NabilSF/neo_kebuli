@@ -14,7 +14,7 @@
         <form action="{{ route('admin.kbli.categories') }}" method="GET" class="w-full md:w-auto">
             <div class="flex gap-2">
                 <input type="text" name="search" value="{{ request('search') }}"
-                    class="block w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-primary-500"
+                    class="block w-full px-3 py-2 border border-gray-300 rounded-md text-sm    "
                     placeholder="Cari kode atau nama...">
                 <button type="submit"
                     class="px-4 py-2 bg-primary-600 text-white text-sm font-medium rounded-md hover:bg-primary-700 border border-primary-600">

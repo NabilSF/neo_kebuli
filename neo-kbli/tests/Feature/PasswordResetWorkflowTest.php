@@ -70,11 +70,11 @@ class PasswordResetWorkflowTest extends TestCase
         // 6. Login with New Password
         $response = $this->post('/login', [
             '_token' => 'testing-csrf-token',
-            'email' => $email,
+            'login' => $email,
             'password' => 'NewPassword123!',
         ]);
         $response->assertSessionHasNoErrors();
-        $response->assertRedirect('/'); 
+        $response->assertRedirect('/dashboard'); 
         
         // Actually, LoginController normally redirects to intended or '/'. Let's just assert redirect.
         $response->assertRedirect();

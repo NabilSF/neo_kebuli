@@ -80,7 +80,7 @@ class ApplicationApiController extends BaseApiController
             'product_material'    => 'nullable|string',
             'production_process'  => 'nullable|string',
             'product_description' => 'nullable|string',
-            'saker_address'       => 'nullable|string',
+            'saker_address'       => ['nullable', 'string', \Illuminate\Validation\Rule::in(array_keys(config('satker')))],
             'document'            => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:10240',
         ]);
 

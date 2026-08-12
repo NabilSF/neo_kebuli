@@ -1,203 +1,178 @@
-@extends('layouts.admin')
+<x-layouts.admin>
+    <x-slot name="header">
+        <x-workspace.header 
+            title="Detail Pengajuan {{ $application->tracking_code }}" 
+            description="Tinjau informasi permohonan, dokumen pendukung, dan riwayat status."
+        >
+            <x-slot name="status">
+                <x-feedback.status-indicator 
+                    :status="$application->status->label()" 
+                    :variant="$application->status->badgeVariant()" 
+                />
+            </x-slot>
+            <x-slot name="actions">
+                <x-ui.button variant="outline" onclick="window.location='{{ route('admin.applications.index') }}'">
+                    Kembali
+                </x-ui.button>
+            </x-slot>
+        </x-workspace.header>
+    </x-slot>
 
-@section('title', 'Detail Permohonan - ' . $application->tracking_code)
-
-@section('content')
-<div class="mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
-    <div>
-        <div class="flex items-center gap-3">
-            <a href="{{ route('admin.applications.index') }}" class="text-gray-400 hover:text-gray-600">
-                <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                </svg>
-            </a>
-            <h2 class="text-2xl font-bold text-gray-900">Detail Permohonan</h2>
-            <x-application.status-badge :status="$application->status" />
-        </div>
-        <p class="text-gray-500 mt-1 ml-9">Kode Pelacakan: <span class="font-mono font-medium text-gray-900">{{ $application->tracking_code }}</span></p>
-    </div>
-</div>
-
-<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-    <!-- Left Column (Main Data) -->
-    <div class="lg:col-span-2 space-y-6">
-        <!-- Target KBLI Box -->
-        <div class="bg-white rounded-md border border-gray-200 overflow-hidden">
-            <div class="px-6 py-4 border-b border-gray-200 bg-gray-50">
-                <h3 class="text-lg font-bold text-gray-900">Target KBLI</h3>
-            </div>
-            <div class="p-6">
-                @if($application->kbliItem)
-                    <div class="flex items-start gap-4">
-                        <div class="flex-shrink-0">
-                            <span class="inline-flex items-center justify-center w-12 h-12 rounded-lg bg-primary-100 text-primary-700 font-bold text-lg">
-                                {{ $application->kbliItem->code }}
-                            </span>
-                        </div>
-                        <div>
-                            <h4 class="text-base font-bold text-gray-900">{{ $application->kbliItem->name }}</h4>
-                            <p class="mt-1 text-sm text-gray-500 line-clamp-3">{{ $application->kbliItem->description }}</p>
-                        </div>
-                    </div>
-                @else
-                    <p class="text-sm text-gray-500">Target KBLI tidak ditentukan atau telah dihapus.</p>
-                @endif
-            </div>
-        </div>
-
-        <!-- Product Details Box -->
-        <div class="bg-white rounded-md border border-gray-200 overflow-hidden">
-            <div class="px-6 py-4 border-b border-gray-200 bg-gray-50">
-                <h3 class="text-lg font-bold text-gray-900">Detail Produk / Usaha</h3>
-            </div>
-            <div class="p-6 space-y-6">
-                <div>
-                    <h4 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-1">Nama Produk / Usaha</h4>
-                    <p class="text-base text-gray-900 font-medium">{{ $application->product_name ?? 'Tidak tersedia' }}</p>
-                </div>
-                <div>
-                    <h4 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-1">Bahan Produk</h4>
-                    <p class="text-base text-gray-900">{{ $application->product_material ?? 'Tidak tersedia (Pengajuan Lama)' }}</p>
-                </div>
-                <div>
-                    <h4 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-1">Proses Produksi</h4>
-                    <p class="text-base text-gray-900 whitespace-pre-wrap">{{ $application->production_process ?? 'Tidak tersedia (Pengajuan Lama)' }}</p>
-                </div>
-                <div>
-                    <h4 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-1">Alamat SAKER / Usaha</h4>
-                    <p class="text-base text-gray-900">{{ $application->saker_address ?? 'Tidak tersedia' }}</p>
-                </div>
-                <div>
-                    <h4 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-1">Deskripsi Produk</h4>
-                    <p class="text-base text-gray-900 whitespace-pre-wrap">{{ $application->product_description ?? '-' }}</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Documents Box -->
-        <div class="bg-white rounded-md border border-gray-200 overflow-hidden">
-            <div class="px-6 py-4 border-b border-gray-200 bg-gray-50">
-                <h3 class="text-lg font-bold text-gray-900">Dokumen Pendukung</h3>
-            </div>
-            <div class="p-6">
-                @if($application->media->isNotEmpty())
-                    <ul class="space-y-3">
-                        @foreach($application->media as $doc)
-                            <li class="flex items-center justify-between p-3 rounded-lg border border-gray-200 bg-gray-50">
-                                <div class="flex items-center gap-3">
-                                    <svg class="w-6 h-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                                    </svg>
-                                    <span class="text-sm font-medium text-gray-900">{{ $doc->original_name }}</span>
-                                </div>
-                                <a href="{{ route('admin.documents.download', $doc->id) }}" target="_blank" class="inline-flex items-center px-3 py-1 bg-white border border-gray-300 rounded shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors">
-                                    Unduh
-                                </a>
-                            </li>
-                        @endforeach
-                    </ul>
-                @else
-                    <p class="text-sm text-gray-500 italic">Tidak ada dokumen pendukung.</p>
-                @endif
-            </div>
-        </div>
-    </div>
-
-    <!-- Right Column (Sidebar) -->
-    <div class="space-y-6">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
         
-        @php
-            use App\Enums\ApplicationStatus;
-            $currentStatus = $application->status instanceof ApplicationStatus ? $application->status : ApplicationStatus::from($application->status);
-        @endphp
+        <!-- Main Content Column -->
+        <div class="lg:col-span-2 space-y-8">
+            <x-workspace.summary-panel title="Informasi Pemohon">
+                <x-workspace.summary-item label="Nama Lengkap" :value="$application->user->name ?? '-'" />
+                <x-workspace.summary-item label="Email" :value="$application->user->email ?? '-'" />
+                @php
+                    $satkerName = config('satker.' . $application->saker_address);
+                    $satkerDisplay = $satkerName ? $application->saker_address . ' — ' . $satkerName : ($application->saker_address ?? '-');
+                @endphp
+                <x-workspace.summary-item label="Kode Satker" :value="$satkerDisplay" />
+            </x-workspace.summary-panel>
 
-        <!-- Review Decision -->
-        <div class="bg-white rounded-md border border-gray-200 overflow-hidden">
-            <div class="px-6 py-4 border-b border-gray-200 bg-gray-50">
-                <h3 class="text-lg font-bold text-gray-900">Keputusan Tinjauan</h3>
-            </div>
-            <div class="p-6">
-                @if($currentStatus->isTerminal())
-                    <div class="bg-blue-50 text-blue-800 p-4 rounded-lg border border-blue-100 flex items-start gap-3">
-                        <svg class="w-6 h-6 flex-shrink-0 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                        <div>
-                            <p class="text-sm font-semibold">Permohonan ini telah mencapai status akhir.</p>
-                            @if($application->reviewer)
-                            <p class="text-xs mt-1 opacity-80">Diselesaikan oleh {{ $application->reviewer->name }} pada {{ $application->reviewed_at?->format('d M Y, H:i') }}</p>
-                            @endif
-                        </div>
+            <x-workspace.summary-panel title="Detail Produk & KBLI">
+                <x-workspace.summary-item label="Nama Produk" :value="$application->product_name ?? '-'" />
+                <x-workspace.summary-item label="Kode KBLI" :value="$application->kbliItem->code ?? '-'" />
+                <x-workspace.summary-item label="Nama KBLI" :value="$application->kbliItem->name ?? '-'" />
+                <x-workspace.summary-item label="Proses Produksi">
+                    <div class="prose prose-sm max-w-none text-slate-700">
+                        {{ $application->production_process ?: 'Tidak ada deskripsi tersedia.' }}
                     </div>
-                @else
-                    <form action="{{ route('admin.applications.update_status', $application->id) }}" method="POST" class="space-y-4">
+                </x-workspace.summary-item>
+            </x-workspace.summary-panel>
+
+            @if($application->status === \App\Enums\WorkflowState::SUBMITTED || $application->status === \App\Enums\WorkflowState::UNDER_REVIEW)
+                @can('assign', $application)
+                <x-ui.card>
+                    <h3 class="text-base font-semibold leading-6 text-slate-900 mb-4">Penugasan Reviewer</h3>
+                    
+                    @if($application->reviewer)
+                        <div class="mb-4 p-4 bg-slate-50 rounded-md flex justify-between items-center border border-border">
+                            <div>
+                                <p class="text-sm font-medium text-slate-900">Ditugaskan kepada:</p>
+                                <p class="text-sm text-slate-500">{{ $application->reviewer->name }}</p>
+                            </div>
+                            <x-feedback.status-indicator status="Aktif" variant="success" />
+                        </div>
+                    @endif
+
+                    <form action="{{ route('admin.applications.assign', $application) }}" method="POST" class="flex flex-col gap-4">
                         @csrf
-                        @method('PATCH')
-                        
-                        <div>
-                            <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Perbarui Status</label>
-                            <select name="status" id="status" class="w-full rounded-lg border-gray-300 focus:border-primary-500 focus:ring-primary-500" required>
-                                <option value="">Pilih keputusan...</option>
-                                @foreach($currentStatus->allowedTransitions() as $transition)
-                                    <option value="{{ $transition->value }}" {{ old('status') === $transition->value ? 'selected' : '' }}>
-                                        {{ __('status.' . $transition->value) ?? ucwords(str_replace('_', ' ', $transition->value)) }}
-                                    </option>
+                        <x-forms.field label="Pilih Peninjau (Reviewer)" name="reviewer_id">
+                            <select name="reviewer_id" class="w-full rounded-md border-border   text-sm h-10">
+                                <option value="">Pilih pengguna...</option>
+                                @foreach($reviewers as $id => $name)
+                                    <option value="{{ $id }}">{{ $name }}</option>
                                 @endforeach
                             </select>
-                            @error('status')
-                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                            @enderror
-                        </div>
+                        </x-forms.field>
+                        
+                        <x-forms.field label="Catatan Penugasan (Opsional)" name="notes">
+                            <x-forms.input type="text" name="notes" placeholder="Catatan internal..." />
+                        </x-forms.field>
 
-                        <div>
-                            <label for="notes" class="block text-sm font-medium text-gray-700 mb-1">Catatan Tinjauan</label>
-                            <textarea name="notes" id="notes" rows="4" class="w-full rounded-lg border-gray-300 focus:border-primary-500 focus:ring-primary-500" placeholder="Masukkan catatan di sini...">{{ old('notes') }}</textarea>
-                            <p class="mt-1 text-xs text-gray-500">Catatan wajib diisi saat menolak atau meminta revisi.</p>
-                            @error('notes')
-                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                            @enderror
+                        <div class="flex justify-end pt-2 border-t border-border mt-2">
+                            <x-ui.button type="submit" variant="primary" size="sm">Tugaskan Pengajuan</x-ui.button>
                         </div>
-
-                        <button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors">
-                            Simpan Keputusan
-                        </button>
                     </form>
-                @endif
-            </div>
+                </x-ui.card>
+                @endcan
+            @endif
+
+            @if($application->status === \App\Enums\WorkflowState::UNDER_REVIEW)
+                @can('approve', $application)
+                    <x-workspace.approval-card 
+                        title="Keputusan Peninjauan" 
+                        description="Tentukan status akhir pengajuan ini berdasarkan hasil evaluasi."
+                    >
+                        <form action="{{ route('admin.applications.approve', $application) }}" method="POST" class="inline-block" onsubmit="return confirm('Tolak permohonan?');">
+                            @csrf
+                            <input type="hidden" name="decision" value="rejected">
+                            <x-ui.button type="submit" variant="danger">Tolak</x-ui.button>
+                        </form>
+                        
+                        <form action="{{ route('admin.applications.approve', $application) }}" method="POST" class="inline-block" onsubmit="return confirm('Minta revisi?');">
+                            @csrf
+                            <input type="hidden" name="decision" value="need_revision">
+                            <x-ui.button type="submit" variant="warning">Minta Revisi</x-ui.button>
+                        </form>
+
+                        <form action="{{ route('admin.applications.approve', $application) }}" method="POST" class="mt-4 border-t border-border pt-4" onsubmit="return confirm('Setujui permohonan dan publikasikan KBLI baru?');">
+                            @csrf
+                            <input type="hidden" name="decision" value="approved">
+                            
+                            <div class="mb-4 space-y-4 text-left">
+                                <h4 class="text-sm font-semibold text-slate-900">Finalisasi KBLI Baru</h4>
+                                
+                                <x-forms.field label="Kode KBLI (5 Digit)" name="code">
+                                    <x-forms.input type="text" name="code" pattern="\d{5}" title="Harus 5 digit angka" placeholder="Contoh: 12345" required />
+                                </x-forms.field>
+
+                                <x-forms.field label="Kategori/Sektor" name="section_id">
+                                    <select name="section_id" required class="w-full rounded-md border-border text-sm h-10">
+                                        <option value="">Pilih Sektor KBLI...</option>
+                                        @foreach(\App\Models\KbliSection::all() as $section)
+                                            <option value="{{ $section->id }}">{{ $section->code }} - {{ $section->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </x-forms.field>
+                            </div>
+
+                            <x-ui.button type="submit" variant="success" class="w-full justify-center">Setujui & Publikasikan</x-ui.button>
+                        </form>
+                    </x-workspace.approval-card>
+                @endcan
+            @endif
+
+            <!-- Komentar Internal Umum -->
+            <x-ui.card>
+                <h3 class="text-base font-semibold leading-6 text-slate-900 mb-4">Tambahkan Catatan Internal</h3>
+                <x-workspace.comment-box 
+                    action="{{ route('admin.applications.add_memo', $application) }}"
+                    method="POST"
+                    placeholder="Masukkan catatan atau memo yang tidak akan mengubah status..."
+                    buttonText="Simpan Catatan"
+                >
+                </x-workspace.comment-box>
+            </x-ui.card>
+
         </div>
 
-        <!-- Reviewer Information -->
-        <div class="bg-white rounded-md border border-gray-200 overflow-hidden">
-            <div class="px-6 py-4 border-b border-gray-200 bg-gray-50">
-                <h3 class="text-lg font-bold text-gray-900">Penugasan Peninjau</h3>
-            </div>
-            <div class="p-6">
-                @if($application->reviewer)
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-full bg-primary-100 text-primary-700 flex items-center justify-center font-bold">
-                            {{ substr($application->reviewer->name, 0, 1) }}
-                        </div>
-                        <div>
-                            <p class="text-sm font-bold text-gray-900">{{ $application->reviewer->name }}</p>
-                            <p class="text-xs text-gray-500">Terakhir Ditinjau: {{ $application->reviewed_at?->format('d M Y') ?? 'N/A' }}</p>
-                        </div>
-                    </div>
+        <!-- Sidebar Column -->
+        <div class="space-y-8">
+            <!-- Timeline Riwayat -->
+            <x-ui.card>
+                <h3 class="text-sm font-medium text-slate-900 mb-6">Riwayat Aktivitas</h3>
+                
+                @if($application->activityLogs->isEmpty())
+                    <x-feedback.empty-state 
+                        title="Belum ada aktivitas" 
+                        description="Pengajuan ini belum memiliki jejak rekam perubahan."
+                    />
                 @else
-                    <p class="text-sm text-gray-500 italic">Belum ada peninjau.</p>
+                    <x-data-display.timeline>
+                        @foreach($application->activityLogs()->latest()->get() as $log)
+                            <x-data-display.timeline-item 
+                                :isLast="$loop->last"
+                                :date="$log->created_at->translatedFormat('d M Y')"
+                                :time="$log->created_at->format('H:i')"
+                                :user="$log->user->name ?? 'Sistem'"
+                                :action="$log->action"
+                                :variant="$log->new_status ? (\App\Enums\WorkflowState::tryFrom($log->new_status)?->badgeVariant() ?? 'gray') : 'info'"
+                            >
+                                @if($log->notes)
+                                    <div class="p-3 bg-slate-50 border border-border rounded-md text-slate-600 mt-2 text-xs italic">
+                                        "{{ $log->notes }}"
+                                    </div>
+                                @endif
+                            </x-data-display.timeline-item>
+                        @endforeach
+                    </x-data-display.timeline>
                 @endif
-            </div>
+            </x-ui.card>
         </div>
 
-        <!-- Application History -->
-        <div class="bg-white rounded-md border border-gray-200 overflow-hidden">
-            <div class="px-6 py-4 border-b border-gray-200 bg-gray-50">
-                <h3 class="text-lg font-bold text-gray-900">Jejak Audit</h3>
-            </div>
-            <div class="p-6">
-                <x-application.history-timeline :histories="$application->histories" />
-            </div>
-        </div>
-        
     </div>
-</div>
-@endsection
+</x-layouts.admin>

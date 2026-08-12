@@ -30,14 +30,14 @@
             <div class="md:col-span-2">
                 <label for="title" class="block text-sm font-medium text-gray-700 mb-1">Judul Berita <span class="text-red-500">*</span></label>
                 <input type="text" name="title" id="title" value="{{ old('title') }}" required
-                    class="block w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-primary-500"
+                    class="block w-full px-3 py-2 border border-gray-300 rounded-md text-sm    "
                     placeholder="Masukkan judul berita...">
             </div>
 
             <div>
                 <label for="category_id" class="block text-sm font-medium text-gray-700 mb-1">Kategori <span class="text-red-500">*</span></label>
                 <select name="category_id" id="category_id" required
-                    class="block w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-primary-500 bg-white">
+                    class="block w-full px-3 py-2 border border-gray-300 rounded-md text-sm     bg-white">
                     <option value="">— Pilih Kategori —</option>
                     @foreach($categories as $cat)
                     <option value="{{ $cat->id }}" {{ old('category_id') == $cat->id ? 'selected' : '' }}>{{ $cat->name }}</option>
@@ -48,7 +48,7 @@
             <div>
                 <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Status Publikasi <span class="text-red-500">*</span></label>
                 <select name="status" id="status" required
-                    class="block w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-primary-500 bg-white">
+                    class="block w-full px-3 py-2 border border-gray-300 rounded-md text-sm     bg-white">
                     <option value="draft" {{ old('status', 'draft') === 'draft' ? 'selected' : '' }}>Draf</option>
                     <option value="published" {{ old('status') === 'published' ? 'selected' : '' }}>Diterbitkan</option>
                     <option value="archived" {{ old('status') === 'archived' ? 'selected' : '' }}>Diarsipkan</option>
@@ -58,21 +58,21 @@
             <div class="md:col-span-2">
                 <label for="excerpt" class="block text-sm font-medium text-gray-700 mb-1">Ringkasan <span class="text-gray-400 font-normal">(opsional)</span></label>
                 <textarea name="excerpt" id="excerpt" rows="2"
-                    class="block w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-primary-500"
+                    class="block w-full px-3 py-2 border border-gray-300 rounded-md text-sm    "
                     placeholder="Ringkasan singkat artikel untuk ditampilkan di halaman daftar berita...">{{ old('excerpt') }}</textarea>
             </div>
 
             <div class="md:col-span-2">
                 <label for="penulis" class="block text-sm font-medium text-gray-700 mb-1">Penulis <span class="text-gray-400 font-normal">(opsional)</span></label>
                 <input type="text" name="penulis" id="penulis" value="{{ old('penulis') }}"
-                    class="block w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-primary-500"
+                    class="block w-full px-3 py-2 border border-gray-300 rounded-md text-sm    "
                     placeholder="Kosongkan untuk otomatis menggunakan nilai: Badan Pusat Statistik (BPS)">
             </div>
 
             <div class="md:col-span-2">
                 <label for="content" class="block text-sm font-medium text-gray-700 mb-1">Isi Artikel <span class="text-red-500">*</span></label>
                 <textarea name="content" id="content" rows="16" required
-                    class="block w-full px-3 py-2 border border-gray-300 rounded-md text-sm font-mono focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-primary-500"
+                    class="block w-full px-3 py-2 border border-gray-300 rounded-md text-sm font-mono    "
                     placeholder="Tulis isi artikel di sini...">{{ old('content') }}</textarea>
                 <p class="text-xs text-gray-400 mt-1">HTML dasar diperbolehkan (p, strong, em, ul, ol, li, h2, h3).</p>
             </div>

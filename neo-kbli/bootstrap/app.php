@@ -17,7 +17,7 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
         
         $middleware->preventRequestForgery(except: [
-            '/apply'
+            //
         ]);
         
         $middleware->web(append: [
@@ -25,10 +25,12 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
 
         $middleware->redirectUsersTo(function () {
-            if (auth()->check() && auth()->user()->hasAnyRole(['super-admin', 'superadmin', 'admin', 'operator'])) {
-                return route('admin.dashboard');
+            if (auth()->check()) {
+                if (auth()->user()->hasAnyRole(['Super Admin', 'super-admin', 'Admin', 'Administrator', 'Operator'])) {
+                    return route('admin.dashboard');
+                }
             }
-            return route('home');
+            return route('dashboard');
         });
     })
     ->withExceptions(function (Exceptions $exceptions): void {

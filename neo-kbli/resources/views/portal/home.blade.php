@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.guest')
 
 @section('title', 'Neo KBLI — Portal Klasifikasi Baku Lapangan Usaha Indonesia')
 
@@ -20,11 +20,11 @@
         {{-- Search Bar --}}
         <div class="max-w-2xl mx-auto">
             <form action="{{ route('search') }}" method="GET" class="relative">
-                <div class="flex rounded-md overflow-hidden border border-gray-300 bg-white focus-within:border-primary-400 focus-within:ring-1 focus-within:ring-primary-500 transition-all">
+                <div class="flex rounded-md overflow-hidden border border-gray-300 bg-white focus-within:border-primary-400 focus-within: focus-within: transition-all">
                     <div class="flex items-center pl-4">
                         <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                     </div>
-                    <input type="text" name="q" aria-label="Kata kunci pencarian KBLI" class="block w-full pl-3 pr-4 py-4 text-gray-900 placeholder-gray-400 outline-none border-none bg-white" placeholder="Cari kode KBLI atau kata kunci...">
+                    <input type="text" name="q" aria-label="Kata kunci pencarian KBLI" class="block w-full pl-3 pr-4 py-4 text-gray-900 placeholder-gray-400  border-none bg-white" placeholder="Cari kode KBLI atau kata kunci...">
                     <button type="submit" class="bg-primary-500 hover:bg-primary-600 text-white px-8 py-4 font-semibold transition-colors flex-shrink-0">
                         Cari
                     </button>
@@ -57,7 +57,7 @@
 <section class="bg-gray-50 border-b border-gray-200 py-12">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-12">
-            <h2 class="text-3xl font-bold text-gray-900 mb-3">Fitur Neo Kebuli</h2>
+            <h2 class="text-3xl font-bold text-gray-900 mb-3">Fitur Neo KBLI</h2>
             <p class="text-gray-600 max-w-xl mx-auto text-sm">Akses cepat ke berbagai layanan utama portal Neo KBLI.</p>
         </div>
 
@@ -102,7 +102,7 @@
         <div class="space-y-3">
             @forelse($categories as $category)
             <div x-data="{ expanded: false }" class="border border-gray-200 rounded-md overflow-hidden bg-white hover:bg-gray-50 transition-colors">
-                <a href="{{ route('search', ['q' => $category->code]) }}" class="w-full px-6 py-4 flex items-center justify-between hover:bg-gray-50 transition-colors focus:outline-none">
+                <a href="{{ route('search', ['q' => $category->code]) }}" class="w-full px-6 py-4 flex items-center justify-between hover:bg-gray-50 transition-colors ">
                     <div class="flex items-center gap-4 text-left">
                         <span class="w-10 h-10 rounded-lg bg-gray-50 text-gray-700 flex items-center justify-center font-bold text-sm flex-shrink-0 border border-gray-200 group-hover:bg-primary-500 transition-colors">{{ $category->code }}</span>
                         <div>

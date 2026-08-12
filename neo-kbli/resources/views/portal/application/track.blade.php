@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.guest')
 
 @section('title', 'Lacak Status Permohonan')
 
@@ -22,8 +22,8 @@
         @endif
 
         <form action="{{ route('tracking.show') }}" method="GET" class="relative max-w-2xl mx-auto group">
-            <div class="flex rounded-md overflow-hidden bg-white border border-gray-300 transition-colors focus-within:ring-1 focus-within:ring-primary-500 focus-within:border-primary-500">
-                <input type="text" name="code" required class="block w-full pl-6 pr-4 py-5 text-lg text-gray-900 placeholder-gray-400 outline-none border-none uppercase tracking-wider font-mono font-bold" placeholder="KBLI-YYYYMMDD-XXXX">
+            <div class="flex rounded-md overflow-hidden bg-white border border-gray-300 transition-colors focus-within: focus-within: focus-within:border-primary-500">
+                <input type="text" name="code" required class="block w-full pl-6 pr-4 py-5 text-lg text-gray-900 placeholder-gray-400  border-none uppercase tracking-wider font-mono font-bold" placeholder="KBLI-YYYYMMDD-XXXX">
                 <button type="submit" class="bg-primary-500 hover:bg-primary-600 text-white px-8 py-5 font-semibold text-lg transition-colors flex-shrink-0">
                     Lacak Status
                 </button>

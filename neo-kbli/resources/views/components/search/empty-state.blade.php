@@ -8,7 +8,7 @@
     <p class="text-gray-500 max-w-md mx-auto mb-6">
         Kami tidak menemukan kode KBLI yang cocok dengan "{{ $query }}". Silakan periksa ejaan Anda atau coba kata kunci yang berbeda.
     </p>
-    <a href="{{ route('home') }}" class="inline-flex items-center justify-center px-5 py-2.5 border border-gray-300 shadow-sm text-sm font-medium rounded-xl text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors">
+    <a href="{{ route('home') }}" class="inline-flex items-center justify-center px-5 py-2.5 border border-gray-300 shadow-sm text-sm font-medium rounded-xl text-gray-700 bg-white hover:bg-gray-50     transition-colors">
         Kembali ke Beranda
     </a>
 </div>

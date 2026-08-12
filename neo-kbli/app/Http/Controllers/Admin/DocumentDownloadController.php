@@ -7,9 +7,11 @@ use App\Models\Media;
 use App\Models\ActivityLog;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
+use App\Services\MediaService;
 
 class DocumentDownloadController extends Controller
 {
+    public function __construct(private MediaService $mediaService) {}
     /**
      * Securely download a document.
      * Authorized for Admin, Operator, or the original document owner.
@@ -21,7 +23,7 @@ class DocumentDownloadController extends Controller
 
         // 1. Authorization Check
         $isOwner = $media->application && $media->application->user_id === $user->id;
-        $isStaff = $user->hasRole('admin') || $user->hasRole('operator'); // Laratrust/Spatie role check
+        $isStaff = $user->hasAnyRole(['admin', 'Admin', 'super-admin', 'Super Admin', 'operator', 'Operator', 'Administrator', 'reviewer', 'Reviewer']);
 
         if (!$isOwner && !$isStaff) {
             abort(403, 'Akses ke dokumen tidak diizinkan.');
@@ -41,6 +43,6 @@ class DocumentDownloadController extends Controller
         ]);
 
         // 4. Stream Private File
-        return Storage::download($media->path, $media->original_name);
+        return $this->mediaService->download($media);
     }
 }

@@ -17,7 +17,7 @@ class SearchService
      */
     public function searchKbli(?string $query, int $perPage = 12): LengthAwarePaginator
     {
-        $itemsQuery = KbliItem::with(['section.category']);
+        $itemsQuery = KbliItem::with(['section.category'])->where('is_active', true);
 
         if (!empty($query)) {
             $itemsQuery->where(function($q) use ($query) {
@@ -42,10 +42,24 @@ class SearchService
             return;
         }
 
-        $log = SearchLog::firstOrCreate(
-            ['keyword' => $keyword],
-            ['frequency' => 0]
-        );
-        $log->increment('frequency', 1, ['last_searched_at' => now()]);
+        try {
+            SearchLog::upsert(
+                [
+                    'keyword' => $keyword,
+                    'frequency' => 1,
+                    'last_searched_at' => now(),
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ],
+                ['keyword'],
+                [
+                    'frequency' => \Illuminate\Support\Facades\DB::raw('frequency + 1'),
+                    'last_searched_at' => now(),
+                    'updated_at' => now(),
+                ]
+            );
+        } catch (\Throwable $e) {
+            // Ignore search log failures to prevent search endpoint breakage
+        }
     }
 }

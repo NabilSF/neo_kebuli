@@ -25,9 +25,19 @@ class CheckRole
             return $next($request);
         }
 
+        // Super Admin or Admin always bypass role check if accessing admin area
+        if ($request->user()->hasAnyRole(['super-admin', 'superadmin', 'Super Admin', 'admin', 'administrator', 'Administrator'])) {
+            return $next($request);
+        }
+
         foreach ($roles as $role) {
-            if ($request->user()->hasRole($role)) {
-                return $next($request);
+            // Handle comma-separated role strings if passed as a single argument
+            $subRoles = explode(',', $role);
+            foreach ($subRoles as $r) {
+                $r = trim($r);
+                if ($request->user()->hasRole($r)) {
+                    return $next($request);
+                }
             }
         }
 

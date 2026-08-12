@@ -1,28 +1,25 @@
 @props(['status', 'size' => 'lg'])
 
 @php
-    use App\Enums\ApplicationStatus;
+    use App\Enums\WorkflowState;
+    
+    $currentStatus = $status instanceof WorkflowState ? $status : WorkflowState::tryFrom($status ?? '');
+    
     $statusColors = [
-        ApplicationStatus::DRAFT->value => 'bg-gray-100 text-gray-800 border-gray-200',
-        ApplicationStatus::SUBMITTED->value => 'bg-blue-100 text-blue-800 border-blue-200',
-        ApplicationStatus::UNDER_REVIEW->value => 'bg-yellow-100 text-yellow-800 border-yellow-200',
-        ApplicationStatus::NEED_REVISION->value => 'bg-orange-100 text-orange-800 border-orange-200',
-        ApplicationStatus::APPROVED->value => 'bg-green-100 text-green-800 border-green-200',
-        ApplicationStatus::REJECTED->value => 'bg-red-100 text-red-800 border-red-200',
+        WorkflowState::DRAFT->value => 'bg-slate-100 text-slate-800 border-border',
+        WorkflowState::SUBMITTED->value => 'bg-info/10 text-info border-info/20',
+        WorkflowState::UNDER_REVIEW->value => 'bg-warning/10 text-warning border-warning/20',
+        WorkflowState::NEED_REVISION->value => 'bg-primary/10 text-primary border-primary/20',
+        WorkflowState::APPROVED->value => 'bg-success/10 text-success border-success/20',
+        WorkflowState::REJECTED->value => 'bg-danger/10 text-danger border-danger/20',
+        WorkflowState::ARCHIVED->value => 'bg-slate-200 text-slate-700 border-slate-300',
     ];
-    // Handle both Enum instance and string values
-    $currentStatus = $status instanceof ApplicationStatus ? $status->value : $status;
-    $statusLabels = [
-        ApplicationStatus::DRAFT->value => 'Draf',
-        ApplicationStatus::SUBMITTED->value => 'Diajukan',
-        ApplicationStatus::UNDER_REVIEW->value => 'Dalam Peninjauan',
-        ApplicationStatus::NEED_REVISION->value => 'Perlu Revisi',
-        ApplicationStatus::APPROVED->value => 'Disetujui',
-        ApplicationStatus::REJECTED->value => 'Ditolak',
-    ];
-    $label = $statusLabels[$currentStatus] ?? str_replace('_', ' ', $currentStatus);
-    $color = $statusColors[$currentStatus] ?? $statusColors[ApplicationStatus::DRAFT->value];
+    
+    $val = $currentStatus?->value ?? (string)$status;
+    $label = $currentStatus ? $currentStatus->label() : str_replace('_', ' ', $val);
+    $color = $statusColors[$val] ?? $statusColors[WorkflowState::DRAFT->value];
     $sizeClasses = $size === 'sm' ? 'px-2 py-1 rounded-md text-xs' : 'px-4 py-2 rounded-xl text-sm';
+@endphp
 @endphp
 
 <span class="inline-flex items-center font-bold uppercase tracking-wider border {{ $color }} {{ $sizeClasses }} shadow-sm">

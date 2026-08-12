@@ -12,13 +12,16 @@ class NewsController extends Controller
 {
     public function index()
     {
-        $news = News::with(['category', 'author'])->latest()->paginate(10);
+        $news = News::with(['category:id,name', 'author:id,name'])
+            ->select(['id', 'title', 'slug', 'status', 'created_at', 'news_category_id', 'created_by'])
+            ->latest()
+            ->paginate(10);
         return view('admin.news.index', compact('news'));
     }
 
     public function create()
     {
-        $categories = NewsCategory::all();
+        $categories = NewsCategory::select('id', 'name')->get();
         return view('admin.news.create', compact('categories'));
     }
 
@@ -53,7 +56,7 @@ class NewsController extends Controller
 
     public function edit(News $news)
     {
-        $categories = NewsCategory::all();
+        $categories = NewsCategory::select('id', 'name')->get();
         return view('admin.news.edit', compact('news', 'categories'));
     }
 

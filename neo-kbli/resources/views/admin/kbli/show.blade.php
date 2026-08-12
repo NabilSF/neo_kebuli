@@ -1,59 +1,65 @@
-@extends('layouts.admin')
+<x-layouts.admin>
+    <x-slot name="header">
+        <x-workspace.header 
+            title="Detail KBLI" 
+            description="Menampilkan informasi rinci dari data Klasifikasi Baku Lapangan Usaha Indonesia."
+        >
+            <x-slot name="status">
+                <x-feedback.status-indicator :status="$item->is_active ? 'aktif' : 'nonaktif'" />
+            </x-slot>
+            <x-slot name="actions">
+                <x-ui.button variant="outline" onclick="window.location='{{ route('admin.kbli.items.edit', $item) }}'">
+                    Ubah Data
+                </x-ui.button>
+                <x-ui.button variant="outline" onclick="window.location='{{ route('admin.kbli.items.index') }}'">
+                    Kembali
+                </x-ui.button>
+            </x-slot>
+        </x-workspace.header>
+    </x-slot>
 
-@section('title', 'Detail KBLI')
-
-@section('content')
-<div class="mb-4">
-    <a href="{{ route('admin.kbli.items') }}" class="inline-flex items-center text-sm text-gray-600 hover:text-primary-600">
-        <svg class="mr-1.5 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
-        Kembali ke Daftar Item
-    </a>
-</div>
-
-<div class="bg-white rounded-md border border-gray-200 overflow-hidden">
-    <!-- Header -->
-    <div class="px-6 py-5 border-b border-gray-200 bg-gray-50">
-        <div class="flex items-center gap-3">
-            <span class="font-mono text-base font-bold text-gray-900 bg-white border border-gray-300 px-3 py-1 rounded-md">{{ $item->code }}</span>
-        </div>
-        <h2 class="text-xl font-bold text-gray-900 mt-2">{{ $item->name }}</h2>
-    </div>
-
-    <!-- Content -->
-    <div class="p-6">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-
-            <!-- Left col (Description) -->
-            <div class="md:col-span-2">
-                <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Deskripsi</h3>
-                @if($item->description)
-                <div class="text-gray-800 text-sm leading-relaxed">
-                    {!! nl2br(e($item->description)) !!}
-                </div>
-                @else
-                <p class="text-sm text-gray-400 italic">Tidak ada deskripsi tersedia.</p>
-                @endif
-            </div>
-
-            <!-- Right col (Hierarchy) -->
-            <div class="bg-gray-50 rounded-md border border-gray-200 p-5">
-                <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Hierarki Klasifikasi</h3>
-
-                @if($item->section && $item->section->category)
-                <div class="text-sm">
-                    <div class="text-gray-500 text-xs mb-0.5">Kategori {{ $item->section->category->code }}</div>
-                    <div class="font-medium text-gray-800 mb-3">{{ $item->section->category->name }}</div>
-
-                    <div class="ml-3 border-l-2 border-gray-300 pl-3 py-1">
-                        <div class="text-gray-500 text-xs mb-0.5">Seksi {{ $item->section->code }}</div>
-                        <div class="font-medium text-gray-800">{{ $item->section->name }}</div>
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        
+        <div class="lg:col-span-2 space-y-8">
+            <x-workspace.summary-panel title="Informasi Utama">
+                <x-workspace.summary-item label="Kode KBLI" :value="$item->code" />
+                <x-workspace.summary-item label="Nama Lapangan Usaha" :value="$item->name" />
+                <x-workspace.summary-item label="Deskripsi Umum">
+                    <div class="prose prose-sm max-w-none text-slate-700">
+                        {{ $item->description ?: 'Tidak ada deskripsi tersedia.' }}
                     </div>
-                </div>
-                @else
-                <span class="text-sm text-gray-400 italic">Data hierarki tidak lengkap.</span>
-                @endif
-            </div>
+                </x-workspace.summary-item>
+            </x-workspace.summary-panel>
+
+            <x-workspace.summary-panel title="Hierarki Klasifikasi">
+                <x-workspace.summary-item label="Golongan Pokok" :value="$item->section->name ?? '-'" />
+                <x-workspace.summary-item label="Kategori Induk" :value="$item->section->category->name ?? '-'" />
+            </x-workspace.summary-panel>
         </div>
+
+        <div class="space-y-8">
+            <x-workspace.statistic-card 
+                title="Total Pengajuan (Simulasi)" 
+                value="142" 
+                trend="up" 
+                trendValue="12% bulan ini" 
+            />
+
+            <x-ui.card>
+                <h3 class="text-sm font-medium text-slate-900 mb-4">Metadata Sistem</h3>
+                <dl class="space-y-3 text-sm">
+                    <div class="flex justify-between">
+                        <dt class="text-slate-500">Dibuat pada</dt>
+                        <dd class="text-slate-900">{{ $item->created_at->translatedFormat('d F Y H:i') }}</dd>
+                    </div>
+                    <div class="flex justify-between">
+                        <dt class="text-slate-500">Terakhir diubah</dt>
+                        <dd class="text-slate-900">{{ $item->updated_at->diffForHumans() }}</dd>
+                    </div>
+                </dl>
+            </x-ui.card>
+        </div>
+
     </div>
-</div>
-@endsection
+
+</x-layouts.admin>
