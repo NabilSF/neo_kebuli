@@ -23,7 +23,7 @@ class NewKebuliApp extends StatelessWidget {
           theme: AppTheme.lightTheme,
           darkTheme: AppTheme.darkTheme,
           themeMode: themeMode,
-          home: MainScreen(),
+          home: const MainScreen(),
         );
       },
     );

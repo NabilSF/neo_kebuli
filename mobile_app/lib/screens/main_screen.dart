@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../theme/app_theme.dart';
-import '../services/auth_service.dart';
+import '../widgets/common_widgets.dart';
 import 'home_screen.dart';
 import 'saved_screen.dart';
 import 'help_screen.dart';
@@ -18,12 +18,6 @@ class _MainScreenState extends State<MainScreen> {
   final GlobalKey<SavedScreenState> _savedScreenKey = GlobalKey<SavedScreenState>();
 
   @override
-  void initState() {
-    super.initState();
-    AuthService().initSession();
-  }
-
-  @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
@@ -34,30 +28,37 @@ class _MainScreenState extends State<MainScreen> {
       valueListenable: ThemeManager.themeModeNotifier,
       builder: (context, themeMode, _) {
         final screens = [
-          HomeScreen(),
+          const HomeScreen(),
           SavedScreen(key: _savedScreenKey),
-          HelpScreen(),
+          const HelpScreen(),
         ];
 
         return Scaffold(
           body: IndexedStack(
+            key: ValueKey('indexed_stack_$themeMode'),
             index: _selectedIndex,
             children: screens,
           ),
-          bottomNavigationBar: _buildBottomNav(),
+          bottomNavigationBar: _buildBottomNav(context),
         );
       },
     );
   }
 
-  Widget _buildBottomNav() {
+  Widget _buildBottomNav(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: AppColors.surface(context),
+        border: Border(
+          top: BorderSide(
+            color: AppColors.outlineVariant(context).withOpacity(0.3),
+            width: 1,
+          ),
+        ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.06),
-            blurRadius: 20,
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 16,
             offset: const Offset(0, -4),
           ),
         ],
@@ -65,13 +66,13 @@ class _MainScreenState extends State<MainScreen> {
       child: SafeArea(
         top: false,
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              _buildNavItem(0, Icons.home_rounded, Icons.home_outlined, 'Beranda'),
-              _buildNavItem(1, Icons.bookmark_rounded, Icons.bookmark_border_rounded, 'Tersimpan'),
-              _buildNavItem(2, Icons.help_rounded, Icons.help_outline_rounded, 'Bantuan'),
+              _buildNavItem(context, 0, Icons.home_rounded, Icons.home_outlined, 'Beranda'),
+              _buildNavItem(context, 1, Icons.bookmark_rounded, Icons.bookmark_border_rounded, 'Simpan'),
+              _buildNavItem(context, 2, Icons.help_rounded, Icons.help_outline_rounded, 'Bantuan'),
             ],
           ),
         ),
@@ -79,9 +80,9 @@ class _MainScreenState extends State<MainScreen> {
     );
   }
 
-  Widget _buildNavItem(int index, IconData activeIcon, IconData inactiveIcon, String label) {
+  Widget _buildNavItem(BuildContext context, int index, IconData activeIcon, IconData inactiveIcon, String label) {
     final isActive = _selectedIndex == index;
-    return GestureDetector(
+    return HoverableBuilder(
       onTap: () {
         setState(() {
           _selectedIndex = index;
@@ -90,43 +91,37 @@ class _MainScreenState extends State<MainScreen> {
           _savedScreenKey.currentState?.loadSavedItems();
         }
       },
-      behavior: HitTestBehavior.opaque,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
-        decoration: BoxDecoration(
-          color: isActive ? AppColors.primarySurface : Colors.transparent,
-          borderRadius: BorderRadius.circular(14),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              isActive ? activeIcon : inactiveIcon,
-              color: isActive ? AppColors.primary : AppColors.slate400,
-              size: 22,
-            ),
-            AnimatedSize(
-              duration: const Duration(milliseconds: 200),
-              child: isActive
-                  ? Row(
-                      children: [
-                        const SizedBox(width: 6),
-                        Text(
-                          label,
-                          style: const TextStyle(
-                            color: AppColors.primary,
-                            fontSize: 13,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                      ],
-                    )
-                  : const SizedBox.shrink(),
-            ),
-          ],
-        ),
-      ),
+      builder: (context, isHovered, isPressed) {
+        return AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+          decoration: BoxDecoration(
+            color: isActive
+                ? AppColors.primaryContainer.withOpacity(0.12)
+                : (isHovered ? AppColors.primary.withOpacity(0.06) : Colors.transparent),
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                isActive ? activeIcon : inactiveIcon,
+                color: isActive ? AppColors.primary : AppColors.onSurfaceVariant(context),
+                size: 22,
+              ),
+              const SizedBox(height: 4),
+              Text(
+                label,
+                style: TextStyle(
+                  fontSize: 11,
+                  fontWeight: isActive ? FontWeight.w700 : FontWeight.w500,
+                  color: isActive ? AppColors.primary : AppColors.onSurfaceVariant(context),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

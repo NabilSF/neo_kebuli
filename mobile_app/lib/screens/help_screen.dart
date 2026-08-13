@@ -34,9 +34,12 @@ class HelpScreen extends StatelessWidget {
       },
     ];
 
-    return Scaffold(
-      backgroundColor: AppColors.background,
-      appBar: AppBar(title: Text('Bantuan & FAQ')),
+    return ValueListenableBuilder<ThemeMode>(
+      valueListenable: ThemeManager.themeModeNotifier,
+      builder: (context, themeMode, _) {
+        return Scaffold(
+          backgroundColor: AppColors.background(context),
+      appBar: AppBar(title: const Text('Bantuan & FAQ')),
       body: ListView(
         physics: const BouncingScrollPhysics(),
         padding: const EdgeInsets.all(20),
@@ -68,7 +71,7 @@ class HelpScreen extends StatelessWidget {
                     color: Colors.white.withOpacity(0.25),
                     borderRadius: BorderRadius.circular(14),
                   ),
-                  child: Icon(
+                  child: const Icon(
                     Icons.help_outline_rounded,
                     color: Colors.white,
                     size: 28,
@@ -110,12 +113,12 @@ class HelpScreen extends StatelessWidget {
             style: TextStyle(
               fontSize: 15,
               fontWeight: FontWeight.w700,
-              color: AppColors.slate900,
+              color: AppColors.slate900(context),
             ),
           ),
           const SizedBox(height: 12),
 
-          ...faqs.map((faq) => _buildFaqItem(faq['q']!, faq['a']!)),
+          ...faqs.map((faq) => _buildFaqItem(context, faq['q']!, faq['a']!)),
 
           const SizedBox(height: 20),
 
@@ -123,7 +126,7 @@ class HelpScreen extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(18),
             decoration: BoxDecoration(
-              color: AppColors.surface,
+              color: AppColors.surfaceContainerLow(context),
               borderRadius: BorderRadius.circular(16),
               boxShadow: [
                 BoxShadow(
@@ -139,10 +142,10 @@ class HelpScreen extends StatelessWidget {
                   width: 44,
                   height: 44,
                   decoration: BoxDecoration(
-                    color: AppColors.primarySurface,
+                    color: AppColors.surfaceContainerHighest(context),
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  child: Icon(Icons.mail_outline_rounded,
+                  child: const Icon(Icons.mail_outline_rounded,
                       color: AppColors.primary, size: 22),
                 ),
                 const SizedBox(width: 14),
@@ -155,22 +158,22 @@ class HelpScreen extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w700,
-                          color: AppColors.slate900,
+                          color: AppColors.slate900(context),
                         ),
                       ),
-                      SizedBox(height: 2),
+                      const SizedBox(height: 2),
                       Text(
                         'Hubungi kami melalui email',
                         style: TextStyle(
                           fontSize: 12,
-                          color: AppColors.slate400,
+                          color: AppColors.slate400(context),
                         ),
                       ),
                     ],
                   ),
                 ),
                 Icon(Icons.arrow_forward_ios_rounded,
-                    size: 14, color: AppColors.slate400),
+                    size: 14, color: AppColors.slate400(context)),
               ],
             ),
           ),
@@ -179,23 +182,25 @@ class HelpScreen extends StatelessWidget {
 
           Center(
             child: Text(
-              'New Kebuli v1.0.0 · Powered by BPS RI',
+              'NEO KEBULI v1.0.0 · Powered by BPS RI',
               style: TextStyle(
                 fontSize: 11,
-                color: AppColors.slate400.withOpacity(0.7),
+                color: AppColors.slate400(context).withOpacity(0.7),
               ),
             ),
           ),
         ],
       ),
     );
+      },
+    );
   }
 
-  Widget _buildFaqItem(String question, String answer) {
+  Widget _buildFaqItem(BuildContext context, String question, String answer) {
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: AppColors.surfaceContainerLow(context),
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
@@ -210,7 +215,7 @@ class HelpScreen extends StatelessWidget {
         childrenPadding:
             const EdgeInsets.fromLTRB(18, 0, 18, 16),
         iconColor: AppColors.primary,
-        collapsedIconColor: AppColors.slate400,
+        collapsedIconColor: AppColors.slate400(context),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         collapsedShape:
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
@@ -218,7 +223,7 @@ class HelpScreen extends StatelessWidget {
           width: 32,
           height: 32,
           decoration: BoxDecoration(
-            color: AppColors.primarySurface,
+            color: AppColors.surfaceContainerHighest(context),
             borderRadius: BorderRadius.circular(8),
           ),
           child: const Center(
@@ -230,7 +235,7 @@ class HelpScreen extends StatelessWidget {
           style: TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w600,
-            color: AppColors.slate900,
+            color: AppColors.slate900(context),
           ),
         ),
         children: [
@@ -238,7 +243,7 @@ class HelpScreen extends StatelessWidget {
             answer,
             style: TextStyle(
               fontSize: 13,
-              color: AppColors.slate700,
+              color: AppColors.slate700(context),
               height: 1.6,
             ),
           ),

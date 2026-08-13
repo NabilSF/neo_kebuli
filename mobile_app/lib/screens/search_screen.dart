@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../theme/app_theme.dart';
@@ -21,7 +23,7 @@ class _SearchScreenState extends State<SearchScreen> {
   List<KbliItem> _results = [];
   bool _isSearching = false;
   bool _hasSearched = false;
-  String _lastQuery = '';
+  String _selectedCategory = 'C'; // Category C Industri Pengolahan
   List<String> _recentSearches = [];
 
   @override
@@ -60,35 +62,38 @@ class _SearchScreenState extends State<SearchScreen> {
 
     final prefs = await SharedPreferences.getInstance();
     await prefs.setStringList('recent_searches', _recentSearches);
-    setState(() {});
+    if (mounted) setState(() {});
   }
 
   Future<void> _deleteRecentSearch(String query) async {
     _recentSearches.remove(query);
     final prefs = await SharedPreferences.getInstance();
     await prefs.setStringList('recent_searches', _recentSearches);
-    setState(() {});
+    if (mounted) setState(() {});
   }
 
   Future<void> _clearAllRecentSearches() async {
     _recentSearches.clear();
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove('recent_searches');
-    setState(() {});
+    if (mounted) setState(() {});
   }
 
-  Future<void> _search(String query) async {
-    if (query.trim().isEmpty || query == _lastQuery) return;
-    _lastQuery = query;
+  Future<void> _search(String query, {String? category}) async {
+    final targetCat = category ?? _selectedCategory;
+    final clean = query.trim();
 
     setState(() {
       _isSearching = true;
       _hasSearched = true;
+      _selectedCategory = targetCat;
     });
 
-    _saveRecentSearch(query);
+    if (clean.isNotEmpty) {
+      _saveRecentSearch(clean);
+    }
 
-    final results = await _api.search(keyword: query);
+    final results = await _api.search(keyword: clean, categoryFilter: targetCat);
 
     if (mounted) {
       setState(() {
@@ -101,25 +106,24 @@ class _SearchScreenState extends State<SearchScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: AppColors.background(context),
       appBar: AppBar(
-        backgroundColor: AppColors.surface,
+        backgroundColor: AppColors.surface(context),
         elevation: 0,
         leadingWidth: 48,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios_new_rounded, size: 18),
+          icon: const Icon(Icons.arrow_back_ios_new_rounded, size: 18),
           onPressed: () => Navigator.pop(context),
         ),
         title: KbliSearchBar(
           controller: _searchController,
           onChanged: (val) {
-            if (val.length >= 3) {
+            if (val.length >= 2 || _selectedCategory != 'ALL') {
               _search(val);
             } else if (val.isEmpty) {
               setState(() {
                 _results = [];
                 _hasSearched = false;
-                _lastQuery = '';
               });
             }
           },
@@ -128,13 +132,89 @@ class _SearchScreenState extends State<SearchScreen> {
         titleSpacing: 0,
         actions: const [SizedBox(width: 16)],
       ),
-      body: _buildBody(),
+      body: Column(
+        children: [
+          // Filter Chips (ALL, A, C)
+          _buildFilterChips(context),
+          Expanded(child: _buildBody(context)),
+        ],
+      ),
     );
   }
 
-  Widget _buildBody() {
+  Widget _buildFilterChips(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      color: AppColors.surface(context),
+      child: Row(
+        children: [
+          _buildChipItem(context, key: 'ALL', label: 'Semua', icon: Icons.grid_view_rounded),
+          const SizedBox(width: 8),
+          _buildChipItem(context, key: 'A', label: 'Kategori A', icon: Icons.eco_rounded, isCatA: true),
+          const SizedBox(width: 8),
+          _buildChipItem(context, key: 'C', label: 'Kategori C', icon: Icons.factory_rounded),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildChipItem(
+    BuildContext context, {
+    required String key,
+    required String label,
+    required IconData icon,
+    bool isCatA = false,
+  }) {
+    final isSelected = _selectedCategory == key;
+    final activeColor = isCatA ? const Color(0xFF059669) : AppColors.primary;
+
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          _selectedCategory = key;
+        });
+        _search(_searchController.text, category: key);
+      },
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
+        decoration: BoxDecoration(
+          color: isSelected
+              ? activeColor
+              : AppColors.surfaceContainerLow(context),
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color: isSelected
+                ? activeColor
+                : AppColors.outlineVariant(context).withOpacity(0.4),
+          ),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              icon,
+              size: 13,
+              color: isSelected ? Colors.white : activeColor,
+            ),
+            const SizedBox(width: 6),
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: isSelected ? FontWeight.w700 : FontWeight.w600,
+                color: isSelected ? Colors.white : AppColors.slate700(context),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBody(BuildContext context) {
     if (!_hasSearched) {
-      return _buildInitialState();
+      return _buildInitialState(context);
     }
 
     if (_isSearching) {
@@ -157,12 +237,12 @@ class _SearchScreenState extends State<SearchScreen> {
       itemCount: _results.length,
       itemBuilder: (context, index) {
         final item = _results[index];
-        return _buildResultCard(item);
+        return _buildResultCard(context, item);
       },
     );
   }
 
-  Widget _buildInitialState() {
+  Widget _buildInitialState(BuildContext context) {
     final suggestions = [
       'Pertanian', 'Konstruksi', 'Perdagangan', 'Pendidikan', 'Teknologi',
       'Pariwisata', 'Manufaktur', 'Keuangan',
@@ -183,7 +263,7 @@ class _SearchScreenState extends State<SearchScreen> {
                   style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w700,
-                    color: AppColors.slate900,
+                    color: AppColors.slate900(context),
                   ),
                 ),
                 TextButton(
@@ -193,7 +273,7 @@ class _SearchScreenState extends State<SearchScreen> {
                     minimumSize: Size.zero,
                     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   ),
-                  child: Text(
+                  child: const Text(
                     'Hapus Semua',
                     style: TextStyle(
                       fontSize: 12,
@@ -210,24 +290,24 @@ class _SearchScreenState extends State<SearchScreen> {
                 return Container(
                   margin: const EdgeInsets.only(bottom: 8),
                   decoration: BoxDecoration(
-                    color: AppColors.surface,
+                    color: AppColors.surfaceContainerLow(context),
                     borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: AppColors.slate200),
+                    border: Border.all(color: AppColors.slate200(context)),
                   ),
                   child: ListTile(
                     contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
                     dense: true,
-                    leading: Icon(Icons.history_rounded, color: AppColors.slate400, size: 18),
+                    leading: Icon(Icons.history_rounded, color: AppColors.slate400(context), size: 18),
                     title: Text(
                       query,
                       style: TextStyle(
                         fontSize: 13,
-                        color: AppColors.slate700,
+                        color: AppColors.slate700(context),
                         fontWeight: FontWeight.w500,
                       ),
                     ),
                     trailing: IconButton(
-                      icon: Icon(Icons.close_rounded, color: AppColors.slate400, size: 16),
+                      icon: Icon(Icons.close_rounded, color: AppColors.slate400(context), size: 16),
                       onPressed: () => _deleteRecentSearch(query),
                       padding: EdgeInsets.zero,
                       constraints: const BoxConstraints(),
@@ -247,7 +327,7 @@ class _SearchScreenState extends State<SearchScreen> {
             style: TextStyle(
               fontSize: 15,
               fontWeight: FontWeight.w700,
-              color: AppColors.slate900,
+              color: AppColors.slate900(context),
             ),
           ),
           const SizedBox(height: 14),
@@ -263,9 +343,9 @@ class _SearchScreenState extends State<SearchScreen> {
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
                   decoration: BoxDecoration(
-                    color: AppColors.surface,
+                    color: AppColors.surfaceContainerLow(context),
                     borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: AppColors.slate200),
+                    border: Border.all(color: AppColors.slate200(context)),
                     boxShadow: [
                       BoxShadow(
                         color: Colors.black.withOpacity(0.04),
@@ -277,14 +357,14 @@ class _SearchScreenState extends State<SearchScreen> {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(Icons.trending_up_rounded,
+                      const Icon(Icons.trending_up_rounded,
                           size: 14, color: AppColors.primary),
                       const SizedBox(width: 6),
                       Text(
                         s,
                         style: TextStyle(
                           fontSize: 13,
-                          color: AppColors.slate700,
+                          color: AppColors.slate700(context),
                           fontWeight: FontWeight.w500,
                         ),
                       ),
@@ -298,13 +378,13 @@ class _SearchScreenState extends State<SearchScreen> {
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: AppColors.primarySurface,
+              color: AppColors.surfaceContainerHighest(context),
               borderRadius: BorderRadius.circular(16),
               border: Border.all(color: AppColors.primary.withOpacity(0.15)),
             ),
             child: Row(
               children: [
-                Icon(Icons.lightbulb_outline_rounded,
+                const Icon(Icons.lightbulb_outline_rounded,
                     color: AppColors.primary, size: 22),
                 const SizedBox(width: 12),
                 Expanded(
@@ -312,7 +392,7 @@ class _SearchScreenState extends State<SearchScreen> {
                     'Tips: Ketik minimal 3 karakter untuk mulai mencari kode KBLI.',
                     style: TextStyle(
                       fontSize: 13,
-                      color: AppColors.slate700,
+                      color: AppColors.slate700(context),
                       height: 1.4,
                     ),
                   ),
@@ -325,80 +405,81 @@ class _SearchScreenState extends State<SearchScreen> {
     );
   }
 
-  Widget _buildResultCard(KbliItem item) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 10),
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.04),
-            blurRadius: 10,
-            offset: const Offset(0, 3),
-          ),
-        ],
-      ),
-      child: Material(
-        color: Colors.transparent,
-        borderRadius: BorderRadius.circular(16),
-        child: InkWell(
+  Widget _buildResultCard(BuildContext context, KbliItem item) {
+    String productsText = '';
+    if (item.produk.isNotEmpty) {
+      productsText = item.produk.join(', ');
+    } else {
+      productsText = item.judul;
+    }
+
+    // Clean up duplicate commas or extra whitespace
+    productsText = productsText
+        .replaceAll(RegExp(r',\s*,'), ',')
+        .replaceAll(RegExp(r'\s+'), ' ')
+        .trim();
+
+    final currentQuery = _searchController.text;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        InkWell(
           onTap: () => Navigator.push(
             context,
             MaterialPageRoute(
               builder: (_) => DetailScreen(
                 categoryCode: item.kode,
                 categoryTitle: item.judul,
+                searchQuery: currentQuery,
               ),
             ),
           ),
-          borderRadius: BorderRadius.circular(16),
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Row(
+          child: Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                  decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                      colors: AppColors.heroGradient,
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
+                Row(
+                  children: [
+                    HighlightedText(
+                      text: item.kode,
+                      query: currentQuery,
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w800,
+                        color: AppColors.slate900(context),
+                        letterSpacing: -0.2,
+                      ),
                     ),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Text(
-                    item.kode,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w700,
-                      letterSpacing: 0.3,
-                    ),
+                    const SizedBox(width: 8),
+                    CategoryBadgeTag(category: item.kategori, isSmall: true),
+                  ],
+                ),
+                const SizedBox(height: 6),
+                HighlightedText(
+                  text: productsText,
+                  query: currentQuery,
+                  style: TextStyle(
+                    fontSize: 13.5,
+                    fontWeight: FontWeight.w500,
+                    color: AppColors.slate700(context),
+                    height: 1.4,
                   ),
                 ),
-                const SizedBox(width: 14),
-                Expanded(
-                  child: Text(
-                    item.judul,
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.slate900,
-                      height: 1.3,
-                    ),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Icon(Icons.chevron_right_rounded,
-                    color: AppColors.slate400, size: 20),
               ],
             ),
           ),
         ),
-      ),
+        Divider(
+          height: 1,
+          thickness: 1,
+          color: AppColors.slate200(context).withOpacity(0.6),
+          indent: 20,
+          endIndent: 20,
+        ),
+      ],
     );
   }
 }

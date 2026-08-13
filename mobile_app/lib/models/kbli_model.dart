@@ -1,82 +1,72 @@
 class KbliCategory {
-  final String code;
-  final String name;
-  final String? description;
-  final int sectionsCount;
+  final String kode;
+  final String judul;
+  final String? deskripsi;
+  final String kategori; // 'A' or 'C'
+  final int itemCount;
 
   KbliCategory({
-    required this.code,
-    required this.name,
-    this.description,
-    this.sectionsCount = 0,
+    required this.kode,
+    required this.judul,
+    this.deskripsi,
+    this.kategori = 'C',
+    this.itemCount = 0,
   });
 
-  // Backward compatibility getters
-  String get kode => code;
-  String get judul => name;
-  String? get deskripsi => description;
-
   factory KbliCategory.fromJson(Map<String, dynamic> json) {
+    final code = json['kode']?.toString() ?? json['id']?.toString() ?? '';
+    final cat = json['kategori']?.toString() ?? (['01', '02', '03'].contains(code) ? 'A' : 'C');
     return KbliCategory(
-      code: json['code']?.toString() ?? json['kode']?.toString() ?? json['id']?.toString() ?? '',
-      name: json['name']?.toString() ?? json['judul']?.toString() ?? json['title']?.toString() ?? '',
-      description: json['description']?.toString() ?? json['deskripsi']?.toString(),
-      sectionsCount: json['sections_count'] is int
-          ? json['sections_count']
-          : int.tryParse(json['sections_count']?.toString() ?? '0') ?? 0,
+      kode: code,
+      judul: json['judul']?.toString() ?? json['title']?.toString() ?? '',
+      deskripsi: json['deskripsi']?.toString() ?? json['description']?.toString(),
+      kategori: cat,
+      itemCount: json['itemCount'] ?? json['item_count'] ?? 0,
     );
   }
 }
 
 class KbliItem {
-  final String code;
-  final String name;
-  final String? description;
-  final String? level;
-  final String? parentCode;
-  final String? parentName;
+  final String kode;
+  final String judul;
+  final String? deskripsi;
+  final String? induk;
+  final String kategori; // 'A' or 'C'
+  final List<String> produk;
+  final List<String> proses;
+  final List<String> kegiatanUtama;
+  final List<String> penjelasanKu;
 
   KbliItem({
-    required this.code,
-    required this.name,
-    this.description,
-    this.level,
-    this.parentCode,
-    this.parentName,
+    required this.kode,
+    required this.judul,
+    this.deskripsi,
+    this.induk,
+    this.kategori = 'C',
+    this.produk = const [],
+    this.proses = const [],
+    this.kegiatanUtama = const [],
+    this.penjelasanKu = const [],
   });
 
-  // Backward compatibility getters
-  String get kode => code;
-  String get judul => name;
-  String? get deskripsi => description;
-  String? get induk => parentCode;
-
   factory KbliItem.fromJson(Map<String, dynamic> json) {
-    String? pCode;
-    String? pName;
-
-    if (json['parent'] != null) {
-      if (json['parent'] is Map) {
-        pCode = json['parent']['code']?.toString();
-        pName = json['parent']['name']?.toString();
-      } else if (json['parent'] is String) {
-        pCode = json['parent'].toString();
-      }
-    } else if (json['induk'] != null) {
-      pCode = json['induk'].toString();
-    }
+    final code = json['kode']?.toString() ?? json['id']?.toString() ?? '';
+    final parent = json['induk']?.toString() ?? json['parent']?.toString();
+    final cat = json['kategori']?.toString() ??
+        (['01', '02', '03'].contains(parent) || code.startsWith(RegExp(r'0[1-3]')) ? 'A' : 'C');
 
     return KbliItem(
-      code: json['code']?.toString() ?? json['kode']?.toString() ?? json['id']?.toString() ?? '',
-      name: json['name']?.toString() ?? json['judul']?.toString() ?? json['title']?.toString() ?? '',
-      description: json['description']?.toString() ?? json['deskripsi']?.toString(),
-      level: json['level']?.toString() ?? (strlen(json['code']?.toString() ?? '') <= 2 ? 'category' : 'item'),
-      parentCode: pCode,
-      parentName: pName,
+      kode: code,
+      judul: json['judul']?.toString() ?? json['title']?.toString() ?? '',
+      deskripsi: json['deskripsi']?.toString() ?? json['description']?.toString(),
+      induk: parent,
+      kategori: cat,
+      produk: (json['produk'] as List<dynamic>?)?.map((e) => e.toString()).toList() ?? [],
+      proses: (json['proses'] as List<dynamic>?)?.map((e) => e.toString()).toList() ?? [],
+      kegiatanUtama: (json['kegiatan_utama'] as List<dynamic>?)?.map((e) => e.toString()).toList() ?? [],
+      penjelasanKu: (json['penjelasan_ku'] as List<dynamic>?)?.map((e) => e.toString()).toList() ?? [],
     );
   }
-
-  static int strlen(String str) => str.length;
 }
 
 class BpsApiResponse {
@@ -87,8 +77,9 @@ class BpsApiResponse {
 
   factory BpsApiResponse.fromJson(Map<String, dynamic> json) {
     return BpsApiResponse(
-      returnCode: json['success'] == true ? 200 : (json['status'] ?? json['returncode'] ?? 0),
+      returnCode: json['status'] ?? json['returncode'] ?? 0,
       data: json['data'] ?? json['results'],
     );
   }
 }
+
