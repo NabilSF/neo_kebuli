@@ -1,6 +1,6 @@
-# Neo KBLI - Deployment & Operations Guide
+# NEO KEBULI - Deployment & Operations Guide
 
-Panduan ini berisi langkah-langkah untuk menyiapkan, merilis, dan memelihara aplikasi Neo KBLI di lingkungan *Staging* atau *Production*.
+Panduan ini berisi langkah-langkah untuk menyiapkan, merilis, dan memelihara aplikasi NEO KEBULI di lingkungan *Staging* atau *Production*.
 
 ## 1. Server Requirements
 
@@ -106,7 +106,7 @@ OUTPUT:
 - Remaining issue jika adagunakan setting local.
 
 ```env
-APP_NAME="Neo KBLI"
+APP_NAME="NEO KEBULI"
 APP_ENV=production
 APP_KEY= # Generate dengan php artisan key:generate
 APP_DEBUG=false
@@ -186,11 +186,11 @@ php artisan storage:link
 ### E. Queue Worker (Supervisor)
 Aplikasi sangat bergantung pada *Queue* untuk mengirim notifikasi Approval/Rejection/Penugasan KBLI. Anda **WAJIB** menjalankan Queue Worker menggunakan Supervisor di Linux.
 
-Buat file konfigurasi `/etc/supervisor/conf.d/neo-kbli-worker.conf`:
+Buat file konfigurasi `/etc/supervisor/conf.d/neo-kebuli-worker.conf`:
 ```ini
-[program:neo-kbli-worker]
+[program:neo-kebuli-worker]
 process_name=%(program_name)s_%(process_num)02d
-command=php /path/to/neo-kbli/artisan queue:work redis --sleep=3 --tries=3 --max-time=3600
+command=php /path/to/neo-kebuli/artisan queue:work redis --sleep=3 --tries=3 --max-time=3600
 autostart=true
 autorestart=true
 stopasgroup=true
@@ -198,14 +198,14 @@ killasgroup=true
 user=www-data
 numprocs=2
 redirect_stderr=true
-stdout_logfile=/path/to/neo-kbli/storage/logs/worker.log
+stdout_logfile=/path/to/neo-kebuli/storage/logs/worker.log
 stopwaitsecs=3600
 ```
 Update supervisor:
 ```bash
 sudo supervisorctl reread
 sudo supervisorctl update
-sudo supervisorctl start neo-kbli-worker:*
+sudo supervisorctl start neo-kebuli-worker:*
 ```
 
 ## 4. Rollback Procedure
@@ -222,7 +222,7 @@ Jika terjadi masalah kritis setelah deployment:
 - **Error 500 (Terjadi Kesalahan Internal):** 
   Jangan nyalakan `APP_DEBUG=true`! Baca pesan aslinya di `storage/logs/laravel.log`.
 - **Notifikasi Email Tidak Masuk / Proses Workflow Terasa Lama (Hang):** 
-  Periksa status Queue Worker. Jika worker mati, restart via `sudo supervisorctl restart neo-kbli-worker:*`. Anda juga bisa memeriksa job gagal via `php artisan queue:failed`.
+  Periksa status Queue Worker. Jika worker mati, restart via `sudo supervisorctl restart neo-kebuli-worker:*`. Anda juga bisa memeriksa job gagal via `php artisan queue:failed`.
 - **File Upload Gagal atau 403 / 404 pada Gambar/PDF:** 
   Periksa permission direktori `storage/app/private`. Pastikan user web server (misal `www-data`) memiliki akses baca dan tulis penuh ke direktori tersebut.
 - **Konfigurasi Tidak Berubah Setelah Edit .env:** 

@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>{{ $title ? $title . ' — ' . config('app.name', 'Neo KBLI') : config('app.name', 'Neo KBLI') }}</title>
+    <title>{{ $title ? $title . ' — ' . config('app.name', 'NEO KEBULI') : config('app.name', 'NEO KEBULI') }}</title>
     <link rel="icon" type="image/png" href="{{ asset('images/logo.png') }}">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @stack('styles')
@@ -20,7 +20,7 @@
     <main class="w-full max-w-md bg-surface p-6 sm:p-8 rounded-lg border border-border shadow-sm">
         <div class="text-center mb-8">
             <a href="{{ route('home') }}" class="inline-block outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2 rounded transition-shadow">
-                <img src="{{ asset('images/logo.png') }}" alt="Neo KBLI" class="h-12 md:h-14 w-auto mx-auto object-contain drop-shadow-sm hover:drop-shadow transition-all">
+                <img src="{{ asset('images/logo.png') }}" alt="NEO KEBULI" class="h-12 md:h-14 w-auto mx-auto object-contain drop-shadow-sm hover:drop-shadow transition-all">
             </a>
             @if(isset($description))
                 <p class="text-sm text-muted mt-2">{{ $description }}</p>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'Applicant Area - Neo KBLI')</title>
+    <title>@yield('title', 'Applicant Area - NEO KEBULI')</title>
     <link rel="icon" type="image/png" href="{{ asset('images/logo.png') }}">
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -27,7 +27,7 @@
                     <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
                 </button>
                 <a href="{{ route('home') }}" class="flex items-center gap-2 outline-none focus-visible:ring-2 focus-visible:ring-primary rounded">
-                    <img src="{{ asset('images/logo.png') }}" alt="Neo KBLI" class="h-8 md:h-10 w-auto object-contain">
+                    <img src="{{ asset('images/logo.png') }}" alt="NEO KEBULI" class="h-8 md:h-10 w-auto object-contain">
                 </a>
             </div>
             
@@ -141,7 +141,7 @@
 
     <footer class="bg-surface border-t border-border py-6 mt-auto">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center">
-            <p class="text-sm text-muted">&copy; {{ date('Y') }} Neo KBLI - Area Pemohon.</p>
+            <p class="text-sm text-muted">&copy; {{ date('Y') }} NEO KEBULI - Area Pemohon.</p>
             @yield('footer')
         </div>
     </footer>

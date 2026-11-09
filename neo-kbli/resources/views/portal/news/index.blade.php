@@ -1,7 +1,7 @@
 @extends('layouts.guest')
 
-@section('title', 'Berita & Pengumuman - Neo KBLI')
-@section('meta_description', 'Informasi terbaru mengenai KBLI, regulasi, pembaruan sistem, dan pengumuman resmi dari Neo KBLI.')
+@section('title', 'Berita & Pengumuman - NEO KEBULI')
+@section('meta_description', 'Informasi terbaru mengenai KBLI, regulasi, pembaruan sistem, dan pengumuman resmi dari NEO KEBULI.')
 
 @section('content')
 

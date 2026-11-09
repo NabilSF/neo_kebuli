@@ -78,25 +78,25 @@ return new class extends Migration
             [
                 'role_name' => 'Super Admin',
                 'name' => 'superadmin',
-                'email' => 'superadmin@neo-kbli.local',
+                'email' => 'superadmin@neo-kebuli.local',
                 'password_env' => 'INITIAL_SUPERADMIN_PASSWORD'
             ],
             [
                 'role_name' => 'Admin',
                 'name' => 'admin',
-                'email' => 'admin@neo-kbli.local',
+                'email' => 'admin@neo-kebuli.local',
                 'password_env' => 'INITIAL_ADMIN_PASSWORD'
             ],
             [
                 'role_name' => 'Operator',
                 'name' => 'operator',
-                'email' => 'operator@neo-kbli.local',
+                'email' => 'operator@neo-kebuli.local',
                 'password_env' => 'INITIAL_OPERATOR_PASSWORD'
             ],
             [
                 'role_name' => 'user',
                 'name' => 'user',
-                'email' => 'user@neo-kbli.local',
+                'email' => 'user@neo-kebuli.local',
                 'password_env' => 'INITIAL_USER_PASSWORD'
             ],
         ];

@@ -17,5 +17,10 @@ class DatabaseSeeder extends Seeder
     {
         // Production initialization is handled via migrations.
         // Tests needing specific data should setup their own data via factories or explicit seeders.
+        // All seeders are idempotent. Running `php artisan db:seed` multiple
+        // times will NOT create duplicate data.
+        $this->call([
+            AdminUserSeeder::class,
+        ]);
     }
 }

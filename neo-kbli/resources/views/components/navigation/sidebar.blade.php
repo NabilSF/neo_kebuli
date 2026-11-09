@@ -2,8 +2,8 @@
     <!-- Logo & Toggle Region -->
     <div class="flex h-12 shrink-0 items-center justify-between px-2">
         <a href="{{ route('home') }}" class="flex items-center gap-2 font-bold text-xl text-primary overflow-hidden outline-none focus-visible:ring-2 focus-visible:ring-primary rounded">
-            <img src="{{ asset('images/logo.png') }}" alt="Neo KBLI" class="w-8 h-8 object-contain shrink-0">
-            <span x-show="!collapsed" class="tracking-tight whitespace-nowrap">Neo KBLI</span>
+            <img src="{{ asset('images/logo.png') }}" alt="NEO KEBULI" class="w-8 h-8 object-contain shrink-0">
+            <span x-show="!collapsed" class="tracking-tight whitespace-nowrap">NEO KEBULI</span>
         </a>
         
         <!-- Toggle Button for Desktop -->

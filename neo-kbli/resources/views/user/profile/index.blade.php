@@ -4,7 +4,7 @@
 @endphp
 @extends($layout)
 
-@section('title', 'Profil Saya - Neo KBLI')
+@section('title', 'Profil Saya - NEO KEBULI')
 
 @section('breadcrumbs')
     <span>/</span>

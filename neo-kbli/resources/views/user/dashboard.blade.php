@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Dashboard Pemohon - Neo KBLI')
+@section('title', 'Dashboard Pemohon - NEO KEBULI')
 
 @section('breadcrumbs')
     <!-- Dashboard is root, no extra segments needed -->

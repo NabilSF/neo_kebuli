@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Pengaturan - Neo KBLI')
+@section('title', 'Pengaturan - NEO KEBULI')
 
 @section('content')
 <div class="mb-6">
@@ -13,7 +13,7 @@
 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
     <div class="md:col-span-1">
         <h3 class="text-lg font-medium text-slate-900">Penampilan</h3>
-        <p class="mt-1 text-sm text-slate-500">Sesuaikan tampilan tema aplikasi Neo KBLI di perangkat Anda.</p>
+        <p class="mt-1 text-sm text-slate-500">Sesuaikan tampilan tema aplikasi NEO KEBULI di perangkat Anda.</p>
     </div>
     
     <div class="md:col-span-2">

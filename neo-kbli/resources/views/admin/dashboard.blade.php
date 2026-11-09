@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Dasbor Eksekutif - Neo KBLI')
+@section('title', 'Dasbor Eksekutif - NEO KEBULI')
 
 @section('content')
 <main class="w-full">

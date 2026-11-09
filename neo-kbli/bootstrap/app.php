@@ -16,7 +16,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'role' => \App\Http\Middleware\CheckRole::class,
         ]);
         
-        $middleware->preventRequestForgery(except: [
+        $middleware->validateCsrfTokens(except: [
             //
         ]);
         

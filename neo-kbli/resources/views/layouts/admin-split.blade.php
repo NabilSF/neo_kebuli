@@ -19,7 +19,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>{{ $title ?? 'Tinjauan - ' . config('app.name', 'Neo KBLI') }}</title>
+    <title>{{ $title ?? 'Tinjauan - ' . config('app.name', 'NEO KEBULI') }}</title>
     <link rel="icon" type="image/png" href="{{ asset('images/logo.png') }}">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @stack('styles')
@@ -32,11 +32,11 @@
     <aside id="sidebar" class="fixed inset-y-0 left-0 z-50 {{ $sidebarCollapsed ? 'lg:w-16' : 'w-64' }} bg-surface border-r border-border transform -translate-x-full lg:translate-x-0 lg:static lg:block transition-all duration-200 ease-in-out flex flex-col" aria-label="Navigasi Bilah Sisi">
         <div class="h-16 flex items-center justify-between px-4 border-b border-border shrink-0">
             @if($sidebarCollapsed)
-                <img src="{{ asset('images/logo.png') }}" alt="Neo KBLI" class="h-8 w-auto mx-auto hidden lg:block object-contain">
-                <img src="{{ asset('images/logo.png') }}" alt="Neo KBLI" class="h-8 w-auto lg:hidden object-contain">
+                <img src="{{ asset('images/logo.png') }}" alt="NEO KEBULI" class="h-8 w-auto mx-auto hidden lg:block object-contain">
+                <img src="{{ asset('images/logo.png') }}" alt="NEO KEBULI" class="h-8 w-auto lg:hidden object-contain">
             @else
                 <div class="flex items-center gap-2">
-                    <img src="{{ asset('images/logo.png') }}" alt="Neo KBLI" class="h-8 w-auto object-contain">
+                    <img src="{{ asset('images/logo.png') }}" alt="NEO KEBULI" class="h-8 w-auto object-contain">
                     <span class="font-bold text-lg text-primary">Admin</span>
                 </div>
             @endif

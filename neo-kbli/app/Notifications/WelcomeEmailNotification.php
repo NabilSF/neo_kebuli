@@ -35,13 +35,13 @@ class WelcomeEmailNotification extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-            ->subject('Selamat Datang di Neo KBLI')
+            ->subject('Selamat Datang di NEO KEBULI')
             ->greeting('Yth. ' . $notifiable->name . ',')
-            ->line('Terima kasih telah mendaftar di Portal Neo KBLI. Akun Anda telah berhasil dibuat.')
+            ->line('Terima kasih telah mendaftar di Portal NEO KEBULI. Akun Anda telah berhasil dibuat.')
             ->line('Melalui portal ini, Anda dapat mencari klasifikasi usaha dan mengajukan permohonan KBLI secara daring.')
             ->action('Menuju Beranda', url('/'))
             ->line('Jika Anda memiliki pertanyaan, silakan hubungi tim dukungan kami.')
-            ->salutation('Hormat kami, Tim Neo KBLI');
+            ->salutation('Hormat kami, Tim NEO KEBULI');
     }
 
     /**

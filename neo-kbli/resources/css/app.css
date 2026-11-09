@@ -84,38 +84,99 @@
 /* Removed media query as JS handles it via .dark class */
 
 :root.dark {
-    --color-white: #181818;
-    --color-gray-50: #111111;
-    --color-gray-100: #181818;
-    --color-gray-200: #222222;
-    --color-gray-300: #303030;
-    --color-gray-400: #525252;
-    --color-gray-500: #a3a3a3;
-    --color-gray-600: #d4d4d4;
-    --color-gray-700: #e5e5e5;
-    --color-gray-800: #f5f5f5;
-    --color-gray-900: #ffffff;
-    
-    --color-slate-50: #111111;
-    --color-slate-100: #181818;
-    --color-slate-200: #222222;
-    --color-slate-300: #303030;
-    --color-slate-400: #525252;
-    --color-slate-500: #a3a3a3;
-    --color-slate-600: #d4d4d4;
-    --color-slate-700: #e5e5e5;
-    --color-slate-800: #f5f5f5;
-    --color-slate-900: #ffffff;
-
-    --color-background: #111111;
-    --color-surface: #181818;
-    --color-border: #303030;
-    --color-primary: #f5f5f5;
-    --color-primary-hover: #d4d4d4;
+    --color-white: #ffffff;
+    --color-background: #0f172a;
+    --color-surface: #1e293b;
+    --color-border: #334155;
+    --color-primary: #f8fafc;
+    --color-primary-hover: #e2e8f0;
     --color-primary-active: #ffffff;
-    --color-muted: #a3a3a3;
-    --color-secondary: #222222;
-    --color-secondary-hover: #303030;
+    --color-muted: #94a3b8;
+    --color-secondary: #1e293b;
+    --color-secondary-hover: #334155;
+}
+
+/* ========================================================= */
+/* DARK MODE SPECIFIC STYLES (User Directive)                */
+/* ========================================================= */
+
+html.dark body,
+html.dark section,
+html.dark main,
+html.dark nav,
+html.dark footer,
+html.dark div,
+html.dark p,
+html.dark h1,
+html.dark h2,
+html.dark h3,
+html.dark h4,
+html.dark h5,
+html.dark h6,
+html.dark span,
+html.dark a,
+html.dark li,
+html.dark label,
+html.dark td,
+html.dark th {
+    color: #ffffff !important;
+}
+
+/* Background surfaces in Dark Mode */
+html.dark body,
+html.dark section,
+html.dark nav,
+html.dark footer,
+html.dark .bg-slate-50,
+html.dark .bg-gray-50,
+html.dark .bg-slate-50\/60 {
+    background-color: #0d0d0f !important;
+}
+
+html.dark div.bg-white,
+html.dark a.bg-white,
+html.dark .bg-surface,
+html.dark .bg-slate-800 {
+    background-color: #16161a !important;
+    border-color: #27272a !important;
+}
+
+/* Card Hover in Dark Mode */
+html.dark div.bg-white:hover,
+html.dark a.bg-white:hover {
+    border-color: #f97316 !important;
+}
+
+/* Digit Code Badges in Dark Mode: Black background with Orange border & White text */
+html.dark .bg-orange-50,
+html.dark .bg-orange-100,
+html.dark span.font-mono,
+html.dark [class*="font-mono"] {
+    background-color: #000000 !important;
+    border: 1px solid #f97316 !important;
+    color: #ffffff !important;
+}
+
+/* Search Input in Dark Mode */
+html.dark input[type="text"],
+html.dark input[type="search"],
+html.dark input {
+    background-color: #16161a !important;
+    color: #ffffff !important;
+    border-color: #27272a !important;
+}
+
+html.dark input::placeholder {
+    color: #a1a1aa !important;
+}
+
+/* Orange Action Buttons in Dark Mode */
+html.dark button.bg-orange-500,
+html.dark a.bg-orange-500,
+html.dark .bg-orange-500 {
+    background-color: #f97316 !important;
+    color: #ffffff !important;
+    border-color: #ea580c !important;
 }
 
 @layer base {

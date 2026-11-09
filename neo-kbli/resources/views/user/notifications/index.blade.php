@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Notifikasi - Neo KBLI')
+@section('title', 'Notifikasi - NEO KEBULI')
 
 @section('breadcrumbs')
     <span>/</span>

@@ -22,7 +22,8 @@ class SearchService
         if (!empty($query)) {
             $itemsQuery->where(function($q) use ($query) {
                 $q->where('code', 'like', "%{$query}%")
-                  ->orWhere('name', 'like', "%{$query}%");
+                  ->orWhere('name', 'like', "%{$query}%")
+                  ->orWhere('description', 'like', "%{$query}%");
             });
 
             $this->logSearch($query);

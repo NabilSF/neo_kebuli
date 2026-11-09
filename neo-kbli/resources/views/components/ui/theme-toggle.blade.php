@@ -1,4 +1,4 @@
-<div x-data="{ theme: localStorage.getItem('neo-kbli-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') }" 
+<div x-data="{ theme: localStorage.getItem('neo-kebuli-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') }" 
      @theme-changed.window="theme = $event.detail"
      class="inline-flex items-center bg-slate-100 dark:bg-neutral-800 rounded-full p-1 border border-slate-200 dark:border-neutral-700 shadow-sm"
      role="group" aria-label="Pilih tema">

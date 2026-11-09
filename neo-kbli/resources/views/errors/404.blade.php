@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>404 - Halaman Tidak Ditemukan | Neo KBLI</title>
+    <title>404 - Halaman Tidak Ditemukan | NEO KEBULI</title>
     <meta name="description" content="Halaman yang Anda cari tidak ditemukan.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -52,7 +52,7 @@
 
         <!-- Logo -->
         <div class="mt-12 flex items-center justify-center gap-2 opacity-50">
-            <span class="text-sm font-semibold text-gray-400">Neo KBLI</span>
+            <span class="text-sm font-semibold text-gray-400">NEO KEBULI</span>
         </div>
     </div>
 </body>

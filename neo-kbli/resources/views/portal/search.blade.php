@@ -1,6 +1,6 @@
 @extends('layouts.guest')
 
-@section('title', $query ? "Hasil Pencarian untuk '" . e($query) . "' - Neo KBLI" : 'Cari Database KBLI')
+@section('title', $query ? "Hasil Pencarian untuk '" . e($query) . "' - NEO KEBULI" : 'Cari Database KBLI')
 
 @section('content')
 <div class="bg-gray-50 py-10 border-b border-gray-200">

@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'Neo KBLI - Sistem Manajemen Klasifikasi Terpadu')</title>
-    <meta name="description" content="@yield('meta_description', 'Cari dan kelola Klasifikasi Baku Lapangan Usaha Indonesia (KBLI) secara efisien dengan Neo KBLI.')">
+    <title>@yield('title', 'NEO KEBULI - Sistem Manajemen Klasifikasi Terpadu')</title>
+    <meta name="description" content="@yield('meta_description', 'Cari dan kelola Klasifikasi Baku Lapangan Usaha Indonesia (KBLI) secara efisien dengan NEO KEBULI.')">
     <link rel="icon" type="image/png" href="{{ asset('images/logo.png') }}">
     
     <!-- OpenGraph Meta Tags for SEO -->
-    <meta property="og:title" content="@yield('title', 'Neo KBLI - Sistem Manajemen Klasifikasi Terpadu')">
-    <meta property="og:description" content="@yield('meta_description', 'Cari dan kelola Klasifikasi Baku Lapangan Usaha Indonesia (KBLI) secara efisien dengan Neo KBLI.')">
+    <meta property="og:title" content="@yield('title', 'NEO KEBULI - Sistem Manajemen Klasifikasi Terpadu')">
+    <meta property="og:description" content="@yield('meta_description', 'Cari dan kelola Klasifikasi Baku Lapangan Usaha Indonesia (KBLI) secara efisien dengan NEO KEBULI.')">
     <meta property="og:type" content="website">
     <meta property="og:url" content="{{ url()->current() }}">
     
@@ -24,6 +24,52 @@
         [x-cloak] { display: none !important; }
         /* Smooth scrolling for anchor links */
         html { scroll-behavior: smooth; }
+
+        /* ========================================================= */
+        /* DARK MODE FORCED OVERRIDES (PURE WHITE TEXT, BLACK DIGIT BOX WITH ORANGE BORDER) */
+        /* ========================================================= */
+        html.dark, html.dark body, html.dark section, html.dark main, html.dark nav, html.dark footer,
+        html.dark div, html.dark p, html.dark h1, html.dark h2, html.dark h3, html.dark h4, html.dark h5,
+        html.dark h6, html.dark span, html.dark a, html.dark li, html.dark label, html.dark td, html.dark th {
+            color: #ffffff !important;
+        }
+
+        html.dark body, html.dark section, html.dark nav, html.dark footer,
+        html.dark .bg-slate-50, html.dark .bg-gray-50, html.dark .bg-slate-50\/60 {
+            background-color: #0d0d0f !important;
+        }
+
+        html.dark div.bg-white, html.dark a.bg-white, html.dark .bg-surface, html.dark .bg-slate-800 {
+            background-color: #16161a !important;
+            border-color: #27272a !important;
+        }
+
+        html.dark div.bg-white:hover, html.dark a.bg-white:hover {
+            border-color: #f97316 !important;
+        }
+
+        /* Digit Code Badges: Black background with Orange border & White text */
+        html.dark .bg-orange-50, html.dark .bg-orange-100, html.dark span.font-mono, html.dark [class*="font-mono"] {
+            background-color: #000000 !important;
+            border: 1px solid #f97316 !important;
+            color: #ffffff !important;
+        }
+
+        html.dark input[type="text"], html.dark input[type="search"], html.dark input {
+            background-color: #16161a !important;
+            color: #ffffff !important;
+            border-color: #27272a !important;
+        }
+
+        html.dark input::placeholder {
+            color: #a1a1aa !important;
+        }
+
+        html.dark button.bg-orange-500, html.dark a.bg-orange-500, html.dark .bg-orange-500 {
+            background-color: #f97316 !important;
+            color: #ffffff !important;
+            border-color: #ea580c !important;
+        }
     </style>
     @include('components.theme-script')
 </head>
@@ -35,8 +81,8 @@
             <div class="flex justify-between h-20">
                 <div class="flex items-center">
                     <a href="{{ route('home') }}" class="flex-shrink-0 flex items-center gap-3 focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 rounded-sm">
-                        <img src="{{ asset('images/logo.png') }}" alt="Neo KBLI" loading="lazy" class="h-10 w-auto">
-                        <span class="font-bold text-2xl tracking-tight text-slate-900 dark:text-white">Neo KBLI</span>
+                        <img src="{{ asset('images/logo.png') }}" alt="NEO KEBULI" loading="lazy" class="h-10 w-auto">
+                        <span class="font-bold text-2xl tracking-tight text-slate-900 dark:text-white">NEO KEBULI</span>
                     </a>
                 </div>
                 
@@ -124,10 +170,10 @@
             <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
                 <div class="md:col-span-1">
                     <div class="flex items-center gap-3 mb-4">
-                        <img src="{{ asset('images/logo.png') }}" alt="Neo KBLI" loading="lazy" class="h-8 w-auto">
-                        <span class="font-bold text-slate-900 dark:text-white text-lg">Neo KBLI</span>
+                        <img src="{{ asset('images/logo.png') }}" alt="NEO KEBULI" loading="lazy" class="h-8 w-auto">
+                        <span class="font-bold text-slate-900 dark:text-white text-lg">NEO KEBULI</span>
                     </div>
-                    <p class="text-sm leading-relaxed">Portal resmi pencarian dan manajemen Klasifikasi Baku Lapangan Usaha Indonesia.</p>
+                    <p class="text-sm leading-relaxed">Portal resmi pencarian KBLI berdasarkan Produk atau kegiatan utama.</p>
                 </div>
                 <div>
                     <h4 class="font-semibold text-slate-900 dark:text-white text-sm uppercase tracking-wider mb-4">Layanan</h4>
@@ -147,16 +193,22 @@
                     </ul>
                 </div>
                 <div>
-                    <h4 class="font-semibold text-slate-900 dark:text-white text-sm uppercase tracking-wider mb-4">Kontak</h4>
+                    <h4 class="font-semibold text-slate-900 dark:text-white text-sm uppercase tracking-wider mb-4">Media Sosial</h4>
                     <ul class="space-y-2 text-sm">
-                        <li>Email: info@neokbli.go.id</li>
-                        <li>Telepon: (021) 1500-587</li>
-                        <li class="pt-2 text-xs text-slate-400 dark:text-slate-500">Kebijakan Privasi berlaku.</li>
+                        <li>
+                            <a href="https://www.instagram.com/bpsprovjateng?dlrf=MXJzMXA0Zm5qZWszbw%3D%3D" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 hover:text-orange-500 transition-colors">
+                                <svg class="w-5 h-5 text-pink-600 dark:text-pink-400 fill-current flex-shrink-0" viewBox="0 0 24 24">
+                                    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                                </svg>
+                                <span>Instagram: @bpsprovjateng</span>
+                            </a>
+                        </li>
+                        <li class="pt-2 text-xs text-slate-400 dark:text-slate-500">BPS Provinsi Jawa Tengah</li>
                     </ul>
                 </div>
             </div>
             <div class="border-t border-border pt-6 mt-6 flex flex-col md:flex-row justify-between items-center text-xs text-slate-500 dark:text-slate-400">
-                <div>&copy; {{ date('Y') }} Neo KBLI. Hak cipta dilindungi undang-undang.</div>
+                <div>&copy; {{ date('Y') }} NEO KEBULI. Hak cipta dilindungi undang-undang.</div>
                 
                 <div class="mt-4 md:mt-0 flex items-center gap-3">
                     <span class="text-slate-500 dark:text-slate-400 mr-2">Tema:</span>

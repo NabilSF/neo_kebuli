@@ -60,7 +60,7 @@
                             <div class="bg-surface px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
                                 <h3 class="text-lg font-bold text-slate-900" id="modal-title">Syarat dan Ketentuan</h3>
                                 <div class="mt-4 space-y-3 text-sm text-slate-600">
-                                    <p>1. Penggunaan Data: Data pribadi yang Anda masukkan akan digunakan secara eksklusif untuk keperluan sistem Neo KBLI dan tidak akan dibagikan ke pihak ketiga tanpa persetujuan Anda.</p>
+                                    <p>1. Penggunaan Data: Data pribadi yang Anda masukkan akan digunakan secara eksklusif untuk keperluan sistem NEO KEBULI dan tidak akan dibagikan ke pihak ketiga tanpa persetujuan Anda.</p>
                                     <p>2. Kewajiban Pengguna: Anda berkewajiban memberikan data yang valid dan bertanggung jawab penuh atas segala aktivitas di dalam akun Anda.</p>
                                     <p>3. Hak Cipta: Seluruh konten dan struktur KBLI mengacu pada peraturan pemerintah yang berlaku.</p>
                                 </div>

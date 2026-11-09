@@ -13,28 +13,28 @@ class SystemAccountTest extends TestCase
 
     public function test_default_super_admin_exists()
     {
-        $user = User::where('email', 'superadmin@neo-kbli.local')->first();
+        $user = User::where('email', 'superadmin@neo-kebuli.local')->first();
         $this->assertNotNull($user);
         $this->assertEquals('superadmin', $user->name);
     }
 
     public function test_default_admin_exists()
     {
-        $user = User::where('email', 'admin@neo-kbli.local')->first();
+        $user = User::where('email', 'admin@neo-kebuli.local')->first();
         $this->assertNotNull($user);
         $this->assertEquals('admin', $user->name);
     }
 
     public function test_default_operator_exists()
     {
-        $user = User::where('email', 'operator@neo-kbli.local')->first();
+        $user = User::where('email', 'operator@neo-kebuli.local')->first();
         $this->assertNotNull($user);
         $this->assertEquals('operator', $user->name);
     }
 
     public function test_default_user_exists()
     {
-        $user = User::where('email', 'user@neo-kbli.local')->first();
+        $user = User::where('email', 'user@neo-kebuli.local')->first();
         $this->assertNotNull($user);
         $this->assertEquals('user', $user->name);
     }
@@ -42,10 +42,10 @@ class SystemAccountTest extends TestCase
     public function test_each_default_account_has_exactly_one_role()
     {
         $emails = [
-            'superadmin@neo-kbli.local',
-            'admin@neo-kbli.local',
-            'operator@neo-kbli.local',
-            'user@neo-kbli.local'
+            'superadmin@neo-kebuli.local',
+            'admin@neo-kebuli.local',
+            'operator@neo-kebuli.local',
+            'user@neo-kebuli.local'
         ];
 
         foreach ($emails as $email) {
@@ -58,9 +58,9 @@ class SystemAccountTest extends TestCase
     public function test_default_admin_accounts_have_correct_dashboard_access()
     {
         $adminAccounts = [
-            'superadmin@neo-kbli.local',
-            'admin@neo-kbli.local',
-            'operator@neo-kbli.local',
+            'superadmin@neo-kebuli.local',
+            'admin@neo-kebuli.local',
+            'operator@neo-kebuli.local',
         ];
 
         foreach ($adminAccounts as $email) {
@@ -74,7 +74,7 @@ class SystemAccountTest extends TestCase
             // Additionally, Spatie role check for 'Admin' vs 'admin' is case-sensitive in SQLite but not MySQL,
             // resulting in a 403 for the Admin account during testing.
             $allowedStatuses = [200, 500];
-            if ($email === 'admin@neo-kbli.local') {
+            if ($email === 'admin@neo-kebuli.local') {
                 $allowedStatuses[] = 403;
             }
             $this->assertTrue(in_array($response->status(), $allowedStatuses), "Failed for {$email}, status was {$response->status()}");
@@ -83,7 +83,7 @@ class SystemAccountTest extends TestCase
 
     public function test_default_user_has_user_dashboard_access()
     {
-        $user = User::where('email', 'user@neo-kbli.local')->first();
+        $user = User::where('email', 'user@neo-kebuli.local')->first();
         $this->assertNotNull($user);
 
         // Accessing user dashboard
@@ -133,7 +133,7 @@ class SystemAccountTest extends TestCase
         // Create conflicting user with same name but different email
         User::factory()->create([
             'name' => 'superadmin',
-            'email' => 'hacker@neo-kbli.local',
+            'email' => 'hacker@neo-kebuli.local',
         ]);
 
         $this->expectException(\Exception::class);

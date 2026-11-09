@@ -31,9 +31,12 @@
                 </x-workspace.summary-item>
             </x-workspace.summary-panel>
 
-            <x-workspace.summary-panel title="Hierarki Klasifikasi">
-                <x-workspace.summary-item label="Golongan Pokok" :value="$item->section->name ?? '-'" />
-                <x-workspace.summary-item label="Kategori Induk" :value="$item->section->category->name ?? '-'" />
+            <x-workspace.summary-panel title="Hierarki Klasifikasi KBLI (5 Level)">
+                <x-workspace.summary-item label="1. Kategori" :value="($item->section->category->code ?? '-') . ' - ' . ($item->section->category->name ?? '-')" />
+                <x-workspace.summary-item label="2. Golongan Pokok (2 Digit)" :value="substr($item->code, 0, 2) . ' - ' . ($item->section->name ?? 'Golongan Pokok ' . substr($item->code, 0, 2))" />
+                <x-workspace.summary-item label="3. Golongan (3 Digit)" :value="substr($item->code, 0, 3) . ' (Merinci golongan pokok berdasarkan jenis aktivitas)'" />
+                <x-workspace.summary-item label="4. Subgolongan (4 Digit)" :value="substr($item->code, 0, 4) . ' (Merinci lagi kegiatan dalam suatu golongan)'" />
+                <x-workspace.summary-item label="5. Kelompok (5 Digit)" :value="$item->code . ' - ' . $item->name . ' (Jenis usaha spesifik)'" />
             </x-workspace.summary-panel>
         </div>
 
