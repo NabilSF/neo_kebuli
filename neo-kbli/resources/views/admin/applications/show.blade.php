@@ -96,8 +96,8 @@
                             <form action="{{ route('admin.applications.approve', $application) }}" method="POST" onsubmit="return confirm('Yakin ingin menolak permohonan ini?');">
                                 @csrf
                                 <input type="hidden" name="decision" value="rejected">
-                                <button type="submit" class="inline-flex items-center justify-center font-medium transition-colors rounded-md px-4 py-2 text-sm bg-red-600 hover:bg-red-700 text-white">
-                                    <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                                <button type="submit" style="background-color: #dc2626 !important; color: #ffffff !important; display: inline-flex !important;" class="btn-reject inline-flex items-center justify-center font-medium transition-colors rounded-md px-4 py-2 text-sm bg-red-600 hover:bg-red-700 text-white cursor-pointer shadow-xs">
+                                    <svg class="w-4 h-4 mr-1.5" style="color: #ffffff !important;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                                     Tolak
                                 </button>
                             </form>
@@ -105,8 +105,8 @@
                             <form action="{{ route('admin.applications.approve', $application) }}" method="POST" onsubmit="return confirm('Yakin ingin meminta revisi pada permohonan ini?');">
                                 @csrf
                                 <input type="hidden" name="decision" value="need_revision">
-                                <button type="submit" class="inline-flex items-center justify-center font-medium transition-colors rounded-md px-4 py-2 text-sm bg-amber-500 hover:bg-amber-600 text-white">
-                                    <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                                <button type="submit" style="background-color: #d97706 !important; color: #ffffff !important; display: inline-flex !important;" class="btn-revision inline-flex items-center justify-center font-medium transition-colors rounded-md px-4 py-2 text-sm bg-amber-500 hover:bg-amber-600 text-white cursor-pointer shadow-xs">
+                                    <svg class="w-4 h-4 mr-1.5" style="color: #ffffff !important;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                                     Minta Revisi
                                 </button>
                             </form>
@@ -151,10 +151,14 @@
                                     </select>
                                 </div>
 
-                                <button type="submit" class="w-full inline-flex items-center justify-center font-semibold transition-colors rounded-md px-4 py-2.5 text-sm bg-green-600 hover:bg-green-700 active:bg-green-800 text-white">
-                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                                    Setujui &amp; Publikasikan
-                                </button>
+                                <div class="pt-2">
+                                    <button type="submit" 
+                                            style="background-color: #16a34a !important; color: #ffffff !important; display: flex !important;"
+                                            class="btn-approve w-full flex items-center justify-center font-semibold rounded-md px-4 py-2.5 text-sm bg-green-600 hover:bg-green-700 active:bg-green-800 text-white shadow-sm cursor-pointer transition-colors">
+                                        <svg class="w-4 h-4 mr-2" style="color: #ffffff !important;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                        Setujui &amp; Publikasikan
+                                    </button>
+                                </div>
                             </form>
                         </div>
                     </x-ui.card>

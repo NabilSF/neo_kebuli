@@ -244,6 +244,43 @@ html.dark .bg-orange-500 {
     border-color: #ea580c !important;
 }
 
+/* Explicit Decision Buttons in Light & Dark Mode */
+.btn-approve,
+button.bg-green-600,
+.bg-green-600 {
+    background-color: #16a34a !important;
+    color: #ffffff !important;
+}
+.btn-approve:hover,
+button.bg-green-600:hover,
+.bg-green-600:hover {
+    background-color: #15803d !important;
+}
+
+.btn-reject,
+button.bg-red-600,
+.bg-red-600 {
+    background-color: #dc2626 !important;
+    color: #ffffff !important;
+}
+.btn-reject:hover,
+button.bg-red-600:hover,
+.bg-red-600:hover {
+    background-color: #b91c1c !important;
+}
+
+.btn-revision,
+button.bg-amber-500,
+.bg-amber-500 {
+    background-color: #d97706 !important;
+    color: #ffffff !important;
+}
+.btn-revision:hover,
+button.bg-amber-500:hover,
+.bg-amber-500:hover {
+    background-color: #b45309 !important;
+}
+
 @layer base {
     body {
         background-color: var(--color-background);
