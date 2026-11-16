@@ -41,6 +41,9 @@
     --color-primary: #171717; /* Near Black */
     --color-primary-hover: #262626; /* Dark Gray */
     --color-primary-active: #0a0a0a; /* Black */
+    --color-primary-500: #262626;
+    --color-primary-600: #171717;
+    --color-primary-700: #0a0a0a;
     
     /* ACTION COLOR (Orange for CTA only) */
     --color-accent: #f97316; /* Orange 500 */
@@ -129,16 +132,65 @@ html.dark nav,
 html.dark footer,
 html.dark .bg-slate-50,
 html.dark .bg-gray-50,
-html.dark .bg-slate-50\/60 {
+html.dark .bg-slate-50\/60,
+html.dark .bg-slate-50\/50 {
     background-color: #0d0d0f !important;
 }
 
 html.dark div.bg-white,
 html.dark a.bg-white,
+html.dark tbody,
+html.dark tbody.bg-white,
+html.dark table.bg-white,
+html.dark tr.bg-white,
+html.dark td.bg-white,
+html.dark th.bg-white,
 html.dark .bg-surface,
 html.dark .bg-slate-800 {
     background-color: #16161a !important;
     border-color: #27272a !important;
+}
+
+html.dark thead.bg-slate-50,
+html.dark thead {
+    background-color: #1a1a1f !important;
+    border-color: #27272a !important;
+}
+
+html.dark tr:hover,
+html.dark tr.hover\:bg-slate-50\/50:hover {
+    background-color: rgba(255, 255, 255, 0.04) !important;
+}
+
+/* Ring colors in Dark Mode */
+html.dark .ring-white {
+    --tw-ring-color: #16161a !important;
+}
+
+html.dark .bg-slate-100 {
+    background-color: #1c1c21 !important;
+    border-color: #27272a !important;
+}
+
+html.dark .bg-slate-200 {
+    background-color: #27272a !important;
+}
+
+/* Badges and text color accents in Dark Mode */
+html.dark .text-primary {
+    color: #f97316 !important;
+}
+html.dark .text-success {
+    color: #22c55e !important;
+}
+html.dark .text-warning {
+    color: #eab308 !important;
+}
+html.dark .text-danger {
+    color: #ef4444 !important;
+}
+html.dark .text-info {
+    color: #0ea5e9 !important;
 }
 
 /* Card Hover in Dark Mode */
@@ -157,13 +209,26 @@ html.dark [class*="font-mono"] {
     color: #ffffff !important;
 }
 
-/* Search Input in Dark Mode */
+/* Inputs, Textareas, and Selects in Dark Mode */
 html.dark input[type="text"],
 html.dark input[type="search"],
-html.dark input {
+html.dark input[type="email"],
+html.dark input[type="password"],
+html.dark input,
+html.dark textarea,
+html.dark select {
     background-color: #16161a !important;
     color: #ffffff !important;
     border-color: #27272a !important;
+}
+
+html.dark select option {
+    background-color: #16161a !important;
+    color: #ffffff !important;
+}
+
+html.dark label.bg-white {
+    background-color: transparent !important;
 }
 
 html.dark input::placeholder {

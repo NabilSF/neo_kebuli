@@ -57,32 +57,32 @@
         {{-- C. Quick Actions --}}
         <div class="lg:col-span-1 space-y-6">
             <div class="bg-surface rounded-xl shadow-sm border border-border p-6">
-                <h2 class="text-sm font-semibold text-slate-900 mb-4">Aksi Cepat</h2>
+                <h2 class="text-sm font-semibold text-slate-900 dark:text-slate-100 mb-4">Aksi Cepat</h2>
                 <div class="grid grid-cols-1 gap-2">
-                    <a href="{{ route('admin.applications.index') }}" class="flex items-center p-3 bg-slate-50 hover:bg-slate-100 rounded-lg transition-colors border border-slate-100 group">
+                    <a href="{{ route('admin.applications.index') }}" class="flex items-center p-3 bg-slate-50 hover:bg-slate-100 dark:bg-slate-800/50 dark:hover:bg-slate-800 rounded-lg transition-colors border border-slate-100 dark:border-slate-800 group">
                         <div class="bg-primary/10 p-2 rounded-md text-primary mr-3 group-hover:bg-primary group-hover:text-white transition-colors">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
                         </div>
-                        <span class="text-sm font-medium text-slate-700">Review Pengajuan</span>
+                        <span class="text-sm font-medium text-slate-700 dark:text-slate-200">Review Pengajuan</span>
                     </a>
-                    <a href="{{ route('admin.kbli.items.index') }}" class="flex items-center p-3 bg-slate-50 hover:bg-slate-100 rounded-lg transition-colors border border-slate-100 group">
+                    <a href="{{ route('admin.kbli.items.index') }}" class="flex items-center p-3 bg-slate-50 hover:bg-slate-100 dark:bg-slate-800/50 dark:hover:bg-slate-800 rounded-lg transition-colors border border-slate-100 dark:border-slate-800 group">
                         <div class="bg-primary/10 p-2 rounded-md text-primary mr-3 group-hover:bg-primary group-hover:text-white transition-colors">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
                         </div>
-                        <span class="text-sm font-medium text-slate-700">Kelola Katalog KBLI</span>
+                        <span class="text-sm font-medium text-slate-700 dark:text-slate-200">Kelola Katalog KBLI</span>
                     </a>
-                    <a href="{{ route('admin.news.index') }}" class="flex items-center p-3 bg-slate-50 hover:bg-slate-100 rounded-lg transition-colors border border-slate-100 group">
+                    <a href="{{ route('admin.news.index') }}" class="flex items-center p-3 bg-slate-50 hover:bg-slate-100 dark:bg-slate-800/50 dark:hover:bg-slate-800 rounded-lg transition-colors border border-slate-100 dark:border-slate-800 group">
                         <div class="bg-primary/10 p-2 rounded-md text-primary mr-3 group-hover:bg-primary group-hover:text-white transition-colors">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"></path></svg>
                         </div>
-                        <span class="text-sm font-medium text-slate-700">Kelola Berita</span>
+                        <span class="text-sm font-medium text-slate-700 dark:text-slate-200">Kelola Berita</span>
                     </a>
                     @if(auth()->user()->hasRole(['super-admin', 'Super Admin']))
-                    <a href="{{ route('admin.users.index') }}" class="flex items-center p-3 bg-slate-50 hover:bg-slate-100 rounded-lg transition-colors border border-slate-100 group">
+                    <a href="{{ route('admin.users.index') }}" class="flex items-center p-3 bg-slate-50 hover:bg-slate-100 dark:bg-slate-800/50 dark:hover:bg-slate-800 rounded-lg transition-colors border border-slate-100 dark:border-slate-800 group">
                         <div class="bg-primary/10 p-2 rounded-md text-primary mr-3 group-hover:bg-primary group-hover:text-white transition-colors">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
                         </div>
-                        <span class="text-sm font-medium text-slate-700">Kelola Pengguna</span>
+                        <span class="text-sm font-medium text-slate-700 dark:text-slate-200">Kelola Pengguna</span>
                     </a>
                     @endif
 
@@ -198,26 +198,26 @@
 
             {{-- Recent Applications Table --}}
             <div class="bg-surface rounded-xl shadow-sm border border-border overflow-hidden">
-                <div class="px-6 py-4 border-b border-border bg-slate-50/50 flex justify-between items-center">
-                    <h2 class="text-sm font-semibold text-slate-900">10 Pengajuan Terbaru</h2>
+                <div class="px-6 py-4 border-b border-border bg-slate-50/50 dark:bg-slate-800/40 flex justify-between items-center">
+                    <h2 class="text-sm font-semibold text-slate-900 dark:text-slate-100">10 Pengajuan Terbaru</h2>
                     <a href="{{ route('admin.applications.index') }}" class="text-xs font-medium text-primary hover:text-primary-600">Lihat Semua</a>
                 </div>
                 <div class="overflow-x-auto">
-                    <table class="min-w-full divide-y divide-border">
-                        <thead class="bg-slate-50">
+                    <table class="min-w-full divide-y divide-border dark:divide-slate-800">
+                        <thead class="bg-slate-50 dark:bg-slate-800/60">
                             <tr>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Tracking / Pemohon</th>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Status</th>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Tanggal</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Tracking / Pemohon</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Status</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Tanggal</th>
                                 <th scope="col" class="relative px-6 py-3"><span class="sr-only">Aksi</span></th>
                             </tr>
                         </thead>
-                        <tbody class="bg-white divide-y divide-border">
+                        <tbody class="bg-white dark:bg-surface divide-y divide-border dark:divide-slate-800">
                             @forelse($recentApplications as $app)
-                            <tr class="hover:bg-slate-50/50 transition-colors">
+                            <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-800/50 transition-colors">
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="text-sm font-semibold text-slate-900">{{ $app['tracking_code'] }}</div>
-                                    <div class="text-sm text-slate-500">{{ $app['userName'] }}</div>
+                                    <div class="text-sm font-semibold text-slate-900 dark:text-slate-100">{{ $app['tracking_code'] }}</div>
+                                    <div class="text-sm text-slate-500 dark:text-slate-400">{{ $app['userName'] }}</div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     @php
@@ -244,7 +244,7 @@
                                         {{ $label }}
                                     </span>
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500 dark:text-slate-400">
                                     {{ $app['created_at'] }}
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
@@ -253,7 +253,7 @@
                             </tr>
                             @empty
                             <tr>
-                                <td colspan="4" class="px-6 py-8 text-center text-sm text-slate-500">Belum ada data pengajuan.</td>
+                                <td colspan="4" class="px-6 py-8 text-center text-sm text-slate-500 dark:text-slate-400">Belum ada data pengajuan.</td>
                             </tr>
                             @endforelse
                         </tbody>
@@ -265,9 +265,9 @@
 
     {{-- E. Recent Activities Timeline --}}
     <div class="bg-surface rounded-xl shadow-sm border border-border p-6 mb-8">
-        <h2 class="text-sm font-semibold text-slate-900 mb-6">Aktivitas Sistem Terbaru (10 Log)</h2>
+        <h2 class="text-sm font-semibold text-slate-900 dark:text-slate-100 mb-6">Aktivitas Sistem Terbaru (10 Log)</h2>
         @if($recentActivities->isEmpty())
-            <p class="text-sm text-slate-500 text-center py-4">Belum ada aktivitas terekam.</p>
+            <p class="text-sm text-slate-500 dark:text-slate-400 text-center py-4">Belum ada aktivitas terekam.</p>
         @else
             <div class="flow-root">
                 <ul role="list" class="-mb-8">
@@ -275,22 +275,22 @@
                     <li>
                         <div class="relative pb-8">
                             @if(!$loop->last)
-                                <span class="absolute top-4 left-4 -ml-px h-full w-0.5 bg-slate-200" aria-hidden="true"></span>
+                                <span class="absolute top-4 left-4 -ml-px h-full w-0.5 bg-slate-200 dark:bg-slate-700" aria-hidden="true"></span>
                             @endif
                             <div class="relative flex space-x-3">
                                 <div>
-                                    <span class="h-8 w-8 rounded-full bg-slate-100 flex items-center justify-center ring-8 ring-white border border-slate-200">
-                                        <svg class="h-4 w-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                    <span class="h-8 w-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center ring-8 ring-white dark:ring-surface border border-slate-200 dark:border-slate-700">
+                                        <svg class="h-4 w-4 text-slate-500 dark:text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                                     </span>
                                 </div>
                                 <div class="min-w-0 flex-1 pt-1.5 flex justify-between space-x-4">
                                     <div>
-                                        <p class="text-sm text-slate-600">
-                                            <span class="font-medium text-slate-900">{{ $activity->user->name ?? 'Sistem' }}</span> 
+                                        <p class="text-sm text-slate-600 dark:text-slate-300">
+                                            <span class="font-medium text-slate-900 dark:text-slate-100">{{ $activity->user->name ?? 'Sistem' }}</span> 
                                             {{ strtolower($activity->description) }}
                                         </p>
                                     </div>
-                                    <div class="text-right text-sm whitespace-nowrap text-slate-500">
+                                    <div class="text-right text-sm whitespace-nowrap text-slate-500 dark:text-slate-400">
                                         <time datetime="{{ $activity->created_at }}">{{ $activity->created_at?->diffForHumans() }}</time>
                                     </div>
                                 </div>
