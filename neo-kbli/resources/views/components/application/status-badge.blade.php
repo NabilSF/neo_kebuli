@@ -20,7 +20,6 @@
     $color = $statusColors[$val] ?? $statusColors[WorkflowState::DRAFT->value];
     $sizeClasses = $size === 'sm' ? 'px-2 py-1 rounded-md text-xs' : 'px-4 py-2 rounded-xl text-sm';
 @endphp
-@endphp
 
 <span class="inline-flex items-center font-bold uppercase tracking-wider border {{ $color }} {{ $sizeClasses }} shadow-sm">
     {{ $label }}
