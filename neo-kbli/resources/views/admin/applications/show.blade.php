@@ -146,7 +146,7 @@
                                     >
                                         <option value="">Pilih Sektor KBLI...</option>
                                         @foreach(\App\Models\KbliSection::all() as $section)
-                                            <option value="{{ $section->id }}">{{ $section->code }} — {{ $section->name }}</option>
+                                            <option value="{{ $section->id }}">{{ $section->code }} - {{ $section->name }}</option>
                                         @endforeach
                                     </select>
                                 </div>
