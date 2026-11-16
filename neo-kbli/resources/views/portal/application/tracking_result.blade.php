@@ -86,47 +86,75 @@
 
     <div class="md:col-span-1">
         <div class="bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700 p-6 sticky top-24 shadow-xs">
-            <h2 class="text-lg font-bold text-gray-900 dark:text-white mb-6 border-b border-gray-100 dark:border-slate-700 pb-3">Status Timeline</h2>
+            <div class="flex items-center justify-between pb-4 mb-6 border-b border-gray-100 dark:border-slate-700">
+                <h2 class="text-base font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                    <svg class="w-4 h-4 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    Status Timeline
+                </h2>
+                <span class="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300">
+                    {{ $application->histories->count() }} Tahap
+                </span>
+            </div>
             
             <div class="flow-root">
-                <ul role="list" class="-mb-8">
+                <ul role="list" class="-mb-6">
                     @foreach($application->histories as $index => $history)
+                    @php
+                        $tlLabels = [
+                            'draft' => 'Draf Disimpan',
+                            'submitted' => 'Diajukan',
+                            'under_review' => 'Sedang Ditinjau',
+                            'need_revision' => 'Perlu Revisi',
+                            'approved' => 'Disetujui',
+                            'rejected' => 'Ditolak',
+                        ];
+                        $tlLabel = $tlLabels[$history->to_status] ?? ucfirst(str_replace('_', ' ', $history->to_status));
+                        
+                        $badgeClasses = match($history->to_status) {
+                            'submitted' => 'bg-blue-50 dark:bg-blue-950/50 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800/60',
+                            'under_review' => 'bg-amber-50 dark:bg-amber-950/50 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-800/60',
+                            'need_revision' => 'bg-orange-50 dark:bg-orange-950/50 text-orange-700 dark:text-orange-300 border-orange-200 dark:border-orange-800/60',
+                            'approved' => 'bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800/60',
+                            'rejected' => 'bg-red-50 dark:bg-red-950/50 text-red-700 dark:text-red-300 border-red-200 dark:border-red-800/60',
+                            default => 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700',
+                        };
+
+                        $noteText = $history->notes;
+                        if ($noteText === 'Application submitted successfully by applicant.') {
+                            $noteText = 'Permohonan berhasil diajukan oleh pemohon.';
+                        }
+                    @endphp
                     <li>
-                        <div class="relative pb-8">
+                        <div class="relative pb-6">
                             @if(!$loop->last)
-                            <span class="absolute top-4 left-4 -ml-px h-full w-0.5 bg-gray-200 dark:bg-slate-700" aria-hidden="true"></span>
+                                <span class="absolute top-4 left-3.5 -ml-px h-full w-0.5 bg-slate-200 dark:bg-slate-700" aria-hidden="true"></span>
                             @endif
-                            <div class="relative flex space-x-3">
-                                <div>
-                                    <span class="h-8 w-8 rounded-full {{ $loop->first ? 'bg-orange-500 text-white' : 'bg-gray-200 dark:bg-slate-700 text-gray-400 dark:text-slate-500' }} flex items-center justify-center font-bold">
+                            <div class="relative flex items-start gap-3">
+                                <div class="flex-shrink-0 mt-0.5">
+                                    <span class="h-7 w-7 rounded-full {{ $loop->first ? 'bg-orange-500 text-white shadow-sm ring-4 ring-orange-100 dark:ring-orange-950/50' : 'bg-slate-200 dark:bg-slate-700 text-slate-500 dark:text-slate-400' }} flex items-center justify-center font-bold">
                                         @if($loop->first)
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path></svg>
                                         @else
-                                            <div class="w-2.5 h-2.5 bg-gray-400 dark:bg-slate-500 rounded-full"></div>
+                                            <div class="w-2 h-2 bg-slate-400 dark:bg-slate-400 rounded-full"></div>
                                         @endif
                                     </span>
                                 </div>
-                                <div class="min-w-0 flex-1 pt-1.5 flex justify-between space-x-4">
-                                    <div>
-                                        @php
-                                            $tlLabels = [
-                                                'draft' => 'Draf',
-                                                'submitted' => 'Diajukan',
-                                                'under_review' => 'Dalam Peninjauan',
-                                                'need_revision' => 'Perlu Revisi',
-                                                'approved' => 'Disetujui',
-                                                'rejected' => 'Ditolak',
-                                            ];
-                                            $tlLabel = $tlLabels[$history->to_status] ?? str_replace('_', ' ', $history->to_status);
-                                        @endphp
-                                        <p class="text-sm text-gray-500 dark:text-slate-400">Diubah menjadi <span class="font-bold text-gray-900 dark:text-white uppercase">{{ $tlLabel }}</span></p>
-                                        @if($history->notes)
-                                        <p class="mt-1 text-sm text-gray-600 dark:text-slate-300 bg-gray-50 dark:bg-slate-900/60 p-2 rounded-lg border border-gray-100 dark:border-slate-700">{{ $history->notes }}</p>
-                                        @endif
+                                
+                                <div class="min-w-0 flex-1">
+                                    <div class="flex items-center justify-between gap-2 flex-wrap">
+                                        <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-bold border {{ $badgeClasses }}">
+                                            {{ $tlLabel }}
+                                        </span>
+                                        <time datetime="{{ $history->created_at }}" class="text-xs text-slate-400 dark:text-slate-500">
+                                            {{ $history->created_at->format('d M Y') }}
+                                        </time>
                                     </div>
-                                    <div class="text-right text-xs whitespace-nowrap text-gray-400 dark:text-slate-500">
-                                        <time datetime="{{ $history->created_at }}">{{ $history->created_at->format('d M Y') }}</time>
-                                    </div>
+                                    
+                                    @if($noteText)
+                                        <p class="mt-2 text-xs text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-slate-900/60 p-2.5 rounded-lg border border-slate-100 dark:border-slate-800 leading-relaxed">
+                                            {{ $noteText }}
+                                        </p>
+                                    @endif
                                 </div>
                             </div>
                         </div>
