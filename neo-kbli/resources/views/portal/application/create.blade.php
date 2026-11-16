@@ -40,69 +40,100 @@
             </div>
             
             <div class="p-6" x-data="{
-                open: false,
                 search: '',
-                loading: false,
+                allKblis: {{ json_encode($kblis->map(fn($k) => ['id' => (string)$k->id, 'code' => $k->code, 'name' => $k->name])) }},
                 selectedId: '{{ old('kbli_item_id', $selectedKbli->id ?? '') }}',
                 selectedText: '{{ $selectedKbli ? $selectedKbli->code . ' - ' . $selectedKbli->name : '' }}',
-                initialItems: {{ json_encode($kblis->map(fn($k) => ['id' => (string)$k->id, 'code' => $k->code, 'name' => $k->name])) }},
-                items: [],
                 init() {
-                    this.items = [...this.initialItems];
                     if (this.selectedId && !this.selectedText) {
-                        const found = this.initialItems.find(i => String(i.id) === String(this.selectedId));
+                        const found = this.allKblis.find(i => String(i.id) === String(this.selectedId));
                         if (found) {
                             this.selectedText = found.code + ' - ' + found.name;
                         }
                     }
                 },
-                get filteredItems() {
-                    if (!this.search || this.search.trim() === '') {
-                        return this.items;
-                    }
-                    const q = this.search.toLowerCase();
-                    return this.items.filter(i => i.code.toLowerCase().includes(q) || i.name.toLowerCase().includes(q));
-                },
-                async searchKbli() {
-                    const q = this.search.trim();
-                    if (q.length < 3) {
-                        this.items = [...this.initialItems];
-                        return;
-                    }
-                    this.loading = true;
-                    try {
-                        let res = await fetch('/api/v1/kbli/search?q=' + encodeURIComponent(q));
-                        let json = await res.json();
-                        if (json.data && json.data.data && json.data.data.length > 0) {
-                            this.items = json.data.data.map(i => ({ id: String(i.id), code: i.code, name: i.name }));
+                filterOptions() {
+                    const q = this.search.toLowerCase().trim();
+                    const select = this.$refs.kbliSelect;
+                    const currentVal = this.selectedId;
+                    
+                    select.innerHTML = '';
+                    
+                    const filtered = !q 
+                        ? this.allKblis 
+                        : this.allKblis.filter(k => k.code.toLowerCase().includes(q) || k.name.toLowerCase().includes(q));
+                    
+                    const defaultOpt = document.createElement('option');
+                    defaultOpt.value = '';
+                    defaultOpt.textContent = q 
+                        ? (filtered.length > 0 ? `-- Ditemukan ${filtered.length} KBLI (Silakan Pilih) --` : '-- Tidak ada KBLI yang cocok --')
+                        : '-- Pilih KBLI Tujuan ({{ $kblis->count() }} Tersedia) --';
+                    select.appendChild(defaultOpt);
+                    
+                    filtered.forEach(k => {
+                        const opt = document.createElement('option');
+                        opt.value = k.id;
+                        opt.textContent = `${k.code} - ${k.name}`;
+                        if (String(k.id) === String(currentVal)) {
+                            opt.selected = true;
                         }
-                    } catch (e) {}
-                    this.loading = false;
+                        select.appendChild(opt);
+                    });
                 },
-                selectItem(item) {
-                    this.selectedId = item.id;
-                    this.selectedText = item.code + ' - ' + item.name;
-                    this.search = '';
-                    this.open = false;
+                onSelectChange(e) {
+                    this.selectedId = e.target.value;
+                    const found = this.allKblis.find(i => String(i.id) === String(this.selectedId));
+                    this.selectedText = found ? found.code + ' - ' + found.name : '';
                 },
-                clearSelection() {
-                    this.selectedId = '';
-                    this.selectedText = '';
+                clearSearch() {
                     this.search = '';
-                    this.open = true;
-                    this.items = [...this.initialItems];
+                    this.filterOptions();
                 }
-            }" @click.outside="open = false">
+            }">
                 
-                <label class="block text-sm font-semibold text-gray-700 dark:text-slate-300 mb-2">
+                <label for="kbli_item_id" class="block text-sm font-semibold text-gray-700 dark:text-slate-300 mb-2">
                     Pilih KBLI Tujuan <span class="text-red-500">*</span>
                 </label>
 
-                <!-- Hidden Input for Form Submission -->
-                <input type="hidden" name="kbli_item_id" :value="selectedId" required id="kbli_item_id">
+                <!-- 1. Kotak Filter / Pencarian Cepat -->
+                <div class="mb-3">
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                        </div>
+                        <input type="text"
+                               x-model="search"
+                               @input.debounce.150ms="filterOptions()"
+                               placeholder="Ketik kode (misal: 1011 atau 10111) atau nama KBLI untuk menyaring pilihan..."
+                               class="w-full pl-10 pr-10 py-2.5 rounded-lg border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 text-sm focus:border-orange-500 dark:focus:border-orange-500 transition-colors">
+                        <button type="button" 
+                                x-show="search" 
+                                @click="clearSearch()" 
+                                class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                        </button>
+                    </div>
+                </div>
 
-                <!-- Tampilan Jika KBLI Sudah Dipilih -->
-                <div x-show="selectedId" x-cloak class="mb-2 p-3.5 bg-orange-50 dark:bg-slate-900 border border-orange-200 dark:border-orange-900/60 rounded-lg flex items-center justify-between gap-3">
+                <!-- 2. Dropdown <select> Asli -->
+                <div class="mb-3">
+                    <select name="kbli_item_id"
+                            id="kbli_item_id"
+                            required
+                            x-ref="kbliSelect"
+                            @change="onSelectChange($event)"
+                            class="block w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-white text-sm focus:border-orange-500 dark:focus:border-orange-500 transition-colors cursor-pointer">
+                        <option value="">-- Pilih KBLI Tujuan ({{ $kblis->count() }} Tersedia) --</option>
+                        @foreach($kblis as $kbli)
+                            <option value="{{ $kbli->id }}" {{ old('kbli_item_id', $selectedKbli->id ?? '') == $kbli->id ? 'selected' : '' }}>
+                                {{ $kbli->code }} - {{ $kbli->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <!-- 3. Tampilan KBLI Terpilih -->
+                <div x-show="selectedId && selectedText" class="p-3.5 bg-orange-50 dark:bg-slate-900/80 border border-orange-200 dark:border-orange-900/60 rounded-lg flex items-center justify-between gap-3">
                     <div class="flex items-center gap-2.5 min-w-0">
                         <span class="w-6 h-6 rounded-full bg-orange-500 text-white flex items-center justify-center flex-shrink-0 text-xs font-bold">✓</span>
                         <div class="min-w-0">
@@ -110,54 +141,10 @@
                             <p class="text-sm font-bold text-slate-900 dark:text-white truncate" x-text="selectedText"></p>
                         </div>
                     </div>
-                    <button type="button" @click="clearSelection()" class="px-3 py-1.5 text-xs font-semibold text-orange-600 dark:text-orange-400 hover:bg-orange-100 dark:hover:bg-slate-800 rounded-md border border-orange-300 dark:border-slate-700 transition-colors flex-shrink-0">
-                        Ganti KBLI
-                    </button>
-                </div>
-
-                <!-- Input Pencarian Dropdown -->
-                <div class="relative" x-show="!selectedId">
-                    <div class="relative">
-                        <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                        </div>
-                        <input type="text"
-                               x-model="search"
-                               @focus="open = true"
-                               @input.debounce.300ms="searchKbli()"
-                               placeholder="Ketik kode (misal: 10111) atau kata kunci KBLI..."
-                               class="w-full pl-10 pr-10 py-3 rounded-lg border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 text-sm focus:border-orange-500 dark:focus:border-orange-500 transition-colors">
-                        <div class="absolute inset-y-0 right-0 pr-3.5 flex items-center pointer-events-none text-slate-400">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                        </div>
-                    </div>
-
-                    <!-- Dropdown List Hasil -->
-                    <div x-show="open"
-                         x-transition.opacity
-                         class="absolute z-30 mt-1.5 w-full bg-white dark:bg-slate-900 rounded-lg shadow-xl border border-gray-200 dark:border-slate-700 max-h-64 overflow-y-auto divide-y divide-gray-100 dark:divide-slate-800">
-                        
-                        <div x-show="loading" class="p-3 text-center text-xs text-slate-500 dark:text-slate-400">
-                            Mencari data KBLI...
-                        </div>
-
-                        <template x-for="item in filteredItems" :key="item.id">
-                            <button type="button"
-                                    @click="selectItem(item)"
-                                    class="w-full text-left px-4 py-2.5 text-sm hover:bg-orange-50 dark:hover:bg-slate-800/80 transition-colors flex items-start gap-2.5 group">
-                                <span class="px-2 py-0.5 rounded font-mono text-xs font-bold bg-orange-100 dark:bg-orange-950/70 text-orange-600 dark:text-orange-400 border border-orange-200 dark:border-orange-800/60 flex-shrink-0 mt-0.5" x-text="item.code"></span>
-                                <span class="text-slate-800 dark:text-slate-200 group-hover:text-orange-600 dark:group-hover:text-orange-400 leading-snug" x-text="item.name"></span>
-                            </button>
-                        </template>
-
-                        <div x-show="!loading && filteredItems.length === 0" class="p-4 text-center text-xs text-slate-500 dark:text-slate-400">
-                            Tidak ditemukan KBLI dengan kata kunci tersebut.
-                        </div>
-                    </div>
                 </div>
 
                 <p class="mt-2 text-xs text-gray-500 dark:text-slate-400">
-                    Cari kode atau kata kunci KBLI usaha Anda di atas untuk memilih klasifikasi yang sesuai.
+                    Gunakan kotak pencarian di atas untuk memfilter daftar pilihan KBLI di dalam dropdown secara instan.
                 </p>
             </div>
         </div>

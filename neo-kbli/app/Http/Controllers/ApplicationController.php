@@ -21,7 +21,10 @@ class ApplicationController extends Controller
                 ->first();
         }
         
-        $kblis = KbliItem::where('is_active', true)->select('id', 'code', 'name')->limit(25)->get();
+        $kblis = KbliItem::where('is_active', true)
+            ->select('id', 'code', 'name')
+            ->orderBy('code', 'asc')
+            ->get();
         if ($selectedKbli && !$kblis->contains('id', $selectedKbli->id)) {
             $kblis->prepend($selectedKbli);
         }
